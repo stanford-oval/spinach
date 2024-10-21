@@ -1,0 +1,37 @@
+name: wikidata
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - gcc # gcc, gxx and make are needed to build some of the pip packages
+  - gxx
+  - make
+  - redis # Redis is used to persist FastAPI's rate limit data, and cache LLM outputs. This installs redis-server
+  - pip:
+    - invoke # used for running multi-part commands. A more Python-friendly alternative to Make
+    - docker # Python bindings for docker. You should also install docker on your system separately.
+    - datasets
+    - jupyter
+    - evaluate
+    - rouge_score
+    - text_generation # TODO remove after code has switched to using ChainLite
+    - PyExecJS
+    - qlever # To host Wikidata locally
+    - sacrebleu
+    - pymongo
+    - rdflib
+    - scipy
+    - spacy
+    - tqdm
+    - pytest
+    - pytest-asyncio # pytest plugin that facilitates the testing of async functions
+    - transformers>=4.38
+    - chainlite
+    - python-redis-cache # To automatically cache outputs of a python function. Used for Wikidata
+    - mwapi
+    - mwparserfromhell
+    - pandas
+    # - git+https://github.com/amazon-science/ReFinED.git@V1#egg=ReFinED # for Wikidata NED model
+    - json_repair # helps fix LLM json outputs

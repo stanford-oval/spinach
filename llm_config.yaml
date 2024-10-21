@@ -1,6 +1,6 @@
 prompt_dirs: # relative to the location of this file
   - "./prompts"
-  - "./llm_parser/prompts"
+  - "./spinach_agent/prompts"
 
 litellm_set_verbose: false
 

@@ -26,6 +26,51 @@
 
 **The SPINACH agent**: The SPINACH agent is a new KBQA approach that mimics expert human SPARQL writing, achieving SOTA on many KBQA datasets. You can try it at https://spinach.genie.stanford.edu
 
+# Folder Structure
+`datasets/` contains all prior dataset files. Predictions for the SPINACH agent used in the paper can be found at:
+- `datasets/qald_7_task4/spinach_output_test.json` for QALD-7
+- `datasets/qald_9_plus/en/spinach_output_test.json` for QALD-9-plus
+- `datasets/qald_10/en/spinach_output_test.json` for QALD-10 full set (the prediction for the ToG subset can be retrieved by uncommenting the portion using `get_tog_baseline_questions` in `evaluate_file.py`)
+- `datasets/wikiwebquestions/spinach_output_dev.json` and `datasets/wikiwebquestions/spinach_output_test.json` for WikiWebQuestions
+
+`spinach_dataset/` contains the dev and test set of the SPINACH dataset. The SPINACH agent's outputs are also stored in this directory.
+
+`spinach_agent/` contains the implementation for the SPINACH agent.
+
+`notebooks/` stores various Jupyter notebooks used to crawl the initial conversations and compute dataset complexity metrics.
+
+`tasks/` stores the files declaring how to use the `invoke` command.
+
+`tests/` contains all tests, which use `pytest`. You can run all tests by running `invoke tests`. `test_eval.py`, which stores test cases for the row-major F1 implementation, can be run via `python tests/test_eval.py`.
+
+# Running the SPINACH agent and evaluating results
+
+## Set up environment
+
+Run `conda env create -f conda_env.yaml`.
+
+Then run `npm install sparqljs`. **TOCHECK:** is this still necessary?
+
+Create a file called `API_KEYS` and write various API keys inside. The format is one key per line, for example `OPENAI_API_KEY=sk-...`
+
+## Run SPINACH parser and evaluate
+
+```
+inv evaluate-parser --parser-type part_to_whole --subsample=-1 --engine=gpt-4o --dataset=datasets/qald_10/en/test.json --output-file=datasets/qald_10/en/spinach_output_test.json --regex-use-select-distinct-and-id-not-label --llm-extract-prediction-if-null
+```
+
+The two flags at the end are for:
+
+- `llm-extract-prediction-if-null`: If a reasoning chain ended without any predicted SPARQL, asks a LLM to return a SPARQL. This part is implemented inside `extract_sparql.ainvoke`. This is helpful because for simple queries, LLMs could just use ``get_wikidata_entry'' to get results instead of ever writing a SPARQL. We enabled this flag for all datasets we evaluated on.
+- `--regex-use-select-distinct-and-id-not-label`: Attempts to use regex to force use `SELECT DISTINCT` instead of `SELECT`, and try to always include the variable QID instead of the label (i.e., use `x` instead of `xLabel`). We enabled this for all datasets except the new SPINACH dataset that we evaluated on (The SPINACH dataset involves more complex predicted SPARQLs. The regex is not sophisticated enough to handle these cases.)
+
+The script will also write a `.log` file with SPINACH's chain of reasonings and actions with the same file name as the `.json` output.
+
+You can re-evaluate the output simply from the `.json` file:
+```
+python spinach_agent/evaluate_file.py --input datasets/qald_10/en/spinach_output_test.json
+```
+
 # License
 
 The code in this repo is released under Apache License, version 2.0. The SPINACH dataset, derived from the Wikidata Request a Query forum, is released under the CC BY-SA 4.0 license, the same license that covers the forum.

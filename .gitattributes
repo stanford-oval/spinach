@@ -1,2 +1,6 @@
 spinach_dataset/spinach_output_dev.json filter=lfs diff=lfs merge=lfs -text
 spinach_dataset/spinach_output_test.json filter=lfs diff=lfs merge=lfs -text
+datasets/wikiwebquestions/spinach_output_dev.json filter=lfs diff=lfs merge=lfs -text
+datasets/wikiwebquestions/spinach_output_dev.log filter=lfs diff=lfs merge=lfs -text
+datasets/wikiwebquestions/spinach_output_test.json filter=lfs diff=lfs merge=lfs -text
+datasets/wikiwebquestions/spinach_output_test.log filter=lfs diff=lfs merge=lfs -text
