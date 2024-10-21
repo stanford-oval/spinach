@@ -71,6 +71,22 @@ You can re-evaluate the output simply from the `.json` file:
 python spinach_agent/evaluate_file.py --input datasets/qald_10/en/spinach_output_test.json
 ```
 
+If you'd like to simply run the parser on a list of questions, use the following code from `evaluate_parser.py`:
+```python
+from chainlite import write_prompt_logs_to_file
+from spinach_agent.part_to_whole_parser import PartToWholeParser
+
+semantic_parser_class = PartToWholeParser
+semantic_parser_class.initialize(engine=args.engine) # e.g. "gpt-4o"
+try:
+    chain_output = semantic_parser_class.run_batch(
+        questions, # this should be a dict of {"question": "...", "conversation_history": [...]}, conversation_history can be empty list if running on single-turn questions
+    )
+finally:
+    write_prompt_logs_to_file() # for debugging purpose
+```
+
+
 # License
 
 The code in this repo is released under Apache License, version 2.0. The SPINACH dataset, derived from the Wikidata Request a Query forum, is released under the CC BY-SA 4.0 license, the same license that covers the forum.
