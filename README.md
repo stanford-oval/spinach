@@ -49,8 +49,6 @@
 
 Run `conda env create -f conda_env.yaml`.
 
-Then run `npm install sparqljs`. **TOCHECK:** is this still necessary?
-
 Create a file called `API_KEYS` and write various API keys inside. The format is one key per line, for example `OPENAI_API_KEY=sk-...`
 
 ## Run SPINACH parser and evaluate
