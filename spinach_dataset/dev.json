@@ -1,0 +1,1087 @@
+[
+    {
+        "id": "dev_3",
+        "title": "Items that links to specific websites",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/11",
+        "question": "Which items have an official website containing 'itch.io', and what are their labels and official website URLs?",
+        "sparql": "SELECT ?linked_from ?linked_fromLabel ?p856 {\n  ?linked_from wdt:P856 ?p856 .\n  FILTER(CONTAINS(STR(?p856),'itch.io'))\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\nORDER BY ?linked_fromLabel\n"
+    },
+    {
+        "id": "dev_4",
+        "title": "Strange quantityUnit in `longest observed lifespan (P4214)` property for 11 objects",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/12",
+        "question": "Which items have more than one unit for the \"longest observed lifespan\" property, and how many units do they have?",
+        "sparql": "SELECT ?item (COUNT(?unit) AS ?number_of_units) {\n  ?item p:P4214 [ psv:P4214 [ wikibase:quantityUnit ?unit ] ] .\n}\nGROUP BY ?item\nHAVING(?number_of_units>1)\n"
+    },
+    {
+        "id": "dev_5",
+        "title": "Item from website URL",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/07",
+        "question": "Which items have an official website URL that contains 'bbc.com', and what are their labels?",
+        "sparql": "SELECT ?item ?itemLabel ?website\nWHERE\n{\n  \n  ?item wdt:P856 ?website .\n  FILTER CONTAINS(LCASE(STR(?website)), 'bbc.com')\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\" }\n} "
+    },
+    {
+        "id": "dev_6",
+        "title": "Qualifier",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/03",
+        "question": "What are the names, birth dates, archive institutions (if available), archive descriptions (if available), inventory numbers (if available), film titles, and award titles of film directors born between 1921 and 1929 who have directed films that received Cannes Film Festival Awards? Please order the results by the archive institution names in descending order.",
+        "sparql": "SELECT DISTINCT ?item ?itemLabel ?naissance ?archives ?archivesLabel ?archivesDescription ?inventaire ?filmLabel ?recompenseLabel \n{\n  ?item wdt:P106 wd:Q2526255; #un \u00e9l\u00e9ment dont l'une des occupations est d'\u00eatre un r\u00e9alisateur.\n        wdt:P569 ?naissance. #date de naissance\n  OPTIONAL {?item p:P485 ?statement. \n            ?statement ps:P485 ?archives. #option avoir d\u00e9pos\u00e9 ses archives dans une institution\n            OPTIONAL {?statement pq:P217 ?inventaire.} #option avoir pour qualificatif un num\u00e9ro d'inventaire.\n           }\n  FILTER (year(?naissance) > 1920).#\u00eatre n\u00e9 apr\u00e8s 1920\n  FILTER (year(?naissance) < 1930).#\u00eatre n\u00e9 avant 1930\n  ?film wdt:P166 ?recompense. #un film ayant re\u00e7u une r\u00e9compense.\n  ?film wdt:P57 ?item. #que ce film aille \u00e9t\u00e9 r\u00e9alis\u00e9 par l'\u00e9l\u00e9ment recherch\u00e9 plus haut.\n  ?recompense wdt:P31 wd:Q28444913. #que la r\u00e9compense soit attribu\u00e9e par le Festival de Cannes.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en,de,it\". }\n}\nORDER BY DESC(?archivesLabel) #trier par ordre d\u00e9croissant de titre d'institution\n"
+    },
+    {
+        "id": "dev_8",
+        "title": "Can't figure out how to exclude statements",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/06",
+        "question": "Who are the siblings of Jane Austen, excluding George Austen and Cassandra Austen, along with their labels?",
+        "sparql": "SELECT DISTINCT ?include ?includeLabel\nWHERE {\n  wd:Q36322 wdt:P3373 ?include .\n  FILTER NOT EXISTS { \n    wd:Q36322 wdt:P3373 ?include .\n    VALUES ?include { wd:Q3101398 wd:Q2505245 }\n  }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "dev_9",
+        "title": "Brothers without property",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/06",
+        "question": "Who are the pairs of individuals born in Italy with the same family name, born in the same place within a 10-year interval, married to each other, and both without any siblings?",
+        "sparql": "SELECT ?item1 ?item1Label ?birthdate1 ?item2 ?item2Label ?birthdate2 ?birthplaceLabel {\n    ?item1 wdt:P19 ?birthplace ; wdt:P734 ?fn .\n    ?birthplace wdt:P17 wd:Q38 .\n    ?item2 wdt:P19 ?birthplace ; wdt:P734 ?fn .\n    hint:Prior hint:rangeSafe true .\n    FILTER( str(?item1) < STR(?item2) )\n    ?item1 wdt:P569 ?birthdate1 . \n    ?item2 wdt:P569 ?birthdate2 . \n    FILTER( ABS( YEAR(?birthdate1) - YEAR(?birthdate2) ) < 10 ) \n    ?item1 wdt:P26 ?item2 .\n   FILTER NOT EXISTS { ?item1 wdt:P3373 [] }\n   FILTER NOT EXISTS { ?item2 wdt:P3373 [] }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n} \nORDER BY ?item1Label ?birthdate1\n"
+    },
+    {
+        "id": "dev_10",
+        "title": "Conditional sum fail",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/06",
+        "question": "How many crew members were aboard the space shuttle mission STS-102 only for takeoff?",
+        "sparql": "SELECT (COUNT(?up) AS ?up_only)\nWHERE \n{\n  values ?item {wd:Q384250} .\n  optional {?item p:P1029 ?tom. \n  optional {?tom pq:P518 ?applies.  } }\n    BIND(IF(?applies=wd:Q854248,1,1/0) AS ?up)\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\nGROUP BY ?item ?itemLabel\n"
+    },
+    {
+        "id": "dev_11",
+        "title": "Getting the point-in-time of a property?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/12",
+        "question": "What are the items with a United States Statutes at Large citation and a United States Public Law number containing '116-', along with their optional point in time, short name, signatory, and the point in time of the signatory (all optional)?",
+        "sparql": "SELECT ?item ?pl ?signatory ?date2 ?short ?itemLabel\nWHERE {\n  ?item wdt:P3825 ?stat ;\n        wdt:P3837 ?pl .\n  OPTIONAL { ?item wdt:P585 ?date . }\n  OPTIONAL { ?item wdt:P1813 ?short . }\n  OPTIONAL { ?item p:P1891 ?stat2 .\n            ?stat2 ps:P1891 ?signatory; .\n            OPTIONAL {?stat2 pq:P585 ?date2 .}\n           }\n  OPTIONAL { \n}\n  FILTER (CONTAINS(?pl, '116-')) .\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en,en\"  }\n}\n"
+    },
+    {
+        "id": "dev_12",
+        "title": "Count only certain identifiers",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/06",
+        "question": "How many Italian external IDs do mathematicians in the website Mathematica Italiana have, grouped by the number of such IDs? In other words, how many mathematicians have 1 external ID, how many have 2, and so on.",
+        "sparql": "#title:count of Italian external IDs for Mathematica Italiana person ID people grouped by number of IDs\nSelect ?ID_count (count(?item) as ?item_count) where { \n  SELECT ?item (count(?id) as ?ID_count) WHERE {\n    ?item wdt:P9114 ?P9114id .\n    OPTIONAL { \n      ?item ?prop ?id.\n      ?propItem wikibase:directClaim ?prop.\n      ?propItem wikibase:propertyType wikibase:ExternalId.\n      ?propItem wdt:P17 wd:Q38.}\n    } group by ?item\n} group by ?ID_count order by desc(?ID_count)\n"
+    },
+    {
+        "id": "dev_15",
+        "title": "Doctoral advisor",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/04",
+        "question": "Who are the doctoral advisors of Leonhard Euler, and their advisors, and so on? In addition, who are his doctoral student, grand-student, great-grand-student, and great-great-grand-students? Each tuple in the result should contain both the student and their doctoral advisor.",
+        "sparql": "\nSELECT ?doctor ?doctorMaster WHERE {\n  { ?root (wdt:P184*) ?doctor. } union {?root wdt:P185/wdt:P185?/wdt:P185?/wdt:P185? ?doctor .}\n  ?doctor wdt:P184 ?doctorMaster.\n  VALUES ?root {\n    wd:Q7604\n  }\n}"
+    },
+    {
+        "id": "dev_16",
+        "title": "List of all partnerships in the district of Offenbach",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/02",
+        "question": "What are the administrative territorial entities within the district of Offenbach and their respective twin towns or sister cities, along with their labels?",
+        "sparql": "SELECT ?item ?itemLabel ?twin ?twinLabel\nWHERE \n{\n  wd:Q7912 wdt:P150* ?item.\n  ?item wdt:P190 ?twin.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "dev_18",
+        "title": "Pianists born in Morocco who died in Paris",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/04",
+        "question": "Who are the pianists born in Morocco and died in Paris?",
+        "sparql": "SELECT ?PersonA ?PersonALabel\nWHERE\n{\n  ?PersonA wdt:P106 wd:Q486748.\n  ?PersonA wdt:P19/wdt:P17? wd:Q1028. hint:Prior hint:gearing \"forward\".\n  ?PersonA wdt:P20 wd:Q90.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "dev_21",
+        "title": "Items that are \"instance of\" two things at the same time",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/10",
+        "question": "What are the items that are both a volume and a scientific journal?",
+        "sparql": "SELECT DISTINCT ?item ?itemLabel WHERE {\n  ?item p:P31 [ ps:P31 wd:Q1238720 ]. \n  ?item p:P31 [ ps:P31 wd:Q5633421 ].\nSERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE]\". }\n}\n"
+    },
+    {
+        "id": "dev_22",
+        "title": "Equivalent of IN in a query",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/04",
+        "question": "What are the distinct border checkpoints, their labels, and their coordinates (if available) for Cyprus?",
+        "sparql": "#defaultView:Map\nSELECT distinct ?item ?itemLabel ?coord WHERE {\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n  VALUES ?borders { wd:Q15974882 }\n  ?item wdt:P361*/wdt:P31/wdt:P279* wd:Q757292 .#checkpoints\n  ?item wdt:P361*/wdt:P31*/wdt:P279* ?borders.\n  OPTIONAL { ?item wdt:P625 ?coord. }\n}\n"
+    },
+    {
+        "id": "dev_24",
+        "title": "All given names for a person.",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2023/05",
+        "question": "Who were the politicians born on June 14, 1946? Include also their family names, given names, and dates of birth.",
+        "sparql": "SELECT ?human ?humanLabel ?lastName ?givenNames ?dob\n WHERE {\n  ?human wdt:P106 wd:Q82955 .\n  ?human p:P735/ps:P735 ?givenNames.\n  ?human wdt:P734 ?lastName.\n  \n  ?human wdt:P569 ?dob . hint:Prior hint:rangeSafe true .\n    FILTER(?dob >= xsd:dateTime(\"1946-06-14T00:00:00Z\") &&\n           ?dob < xsd:dateTime(\"1946-06-15T00:00:00Z\")) .\n SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". }\n }\n"
+    },
+    {
+        "id": "dev_30",
+        "title": "I need a help search `country (P17)` with specific countries",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/10",
+        "question": "What are the items that are associated with both Zambia and Angola as their countries, and do not have any other country associations?",
+        "sparql": "SELECT ?item ?itemLabel WHERE {\n  ?item wdt:P17 wd:Q953.                 # must have P17=Zambia\n  ?item wdt:P17 wd:Q916.                 # must have P17=Angola\n  FILTER NOT EXISTS {?item wdt:P17 ?P17. # must not have a P17 value where...\n                     FILTER(?P17 NOT IN (wd:Q916, wd:Q953)) } # ...the P17 value is not in the wd:Q916, wd:Q953 list\n  # add more specific clauses here\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE]\" . }\n}\n"
+    },
+    {
+        "id": "dev_31",
+        "title": "Catalan label and Roman people",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/03",
+        "question": "Which items have a Roman praenomen, have identical English and Catalan labels, and do not have a Latin label? Include the item, Roman praenomen, and the English label in the results.",
+        "sparql": "SELECT ?item ?roman_praenomen ?enlabel WHERE {\n  ?item wdt:P2358 ?roman_praenomen .\n  ?item rdfs:label ?enlabel .\n  FILTER(LANG(?enlabel) = 'en') .\n  ?item rdfs:label ?calabel .\n  FILTER(LANG(?calabel) = 'ca') .\n  FILTER(STR(?enlabel) = STR(?calabel)) .\n  OPTIONAL {\n    ?item rdfs:label ?lalabel .\n    FILTER(LANG(?lalabel) = 'la') .\n  }\n  FILTER(!BOUND(?lalabel)) .\n}\n"
+    },
+    {
+        "id": "dev_34",
+        "title": "Type of Relationships",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/08",
+        "question": "Who are the people that have a specific relationship with Marilyn Monroe (Marilyn Monroe is the object), and what is the nature of their relationship? Consider these relationships: child, place of death, unmarried partner, sibling, and spouse.",
+        "sparql": "SELECT DISTINCT ?PersonLabel ?relationshipLabel WHERE\n{\n  ?Person ?predicate wd:Q4616.\n  ?relationship wikibase:directClaim ?predicate .\n  VALUES ?relationship {wd:P40 wd:P20 wd:P451 wd:P3373 wd:P26}\n  SERVICE wikibase:label{bd:serviceParam wikibase:language \"en\".}\n} \n"
+    },
+    {
+        "id": "dev_35",
+        "title": "Using a triple as an IF condition",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/04",
+        "question": "Are Microsoft Windows, macOS, iOS, and Android classified as \"MobileOS\" or \"DesktopOS\"? Retrun whether each one is a MobileOS or DesktopOS",
+        "sparql": "#OS\nSELECT ?product ?productLabel ?productType \nWHERE \n{\n  VALUES ?product { wd:Q1406 wd:Q14116 wd:Q48493 wd:Q94 }. # macOS, Windows, iOS, Android\n  BIND(IF(EXISTS { ?product wdt:P31 wd:Q920890 }, \"MobileOS\", \"DesktopOS\") AS ?productType) # if instance of mobileOS...\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "dev_37",
+        "title": "Two-letter genera, on Wikispecies",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/07",
+        "question": "Which genera have taxon names consisting of exactly two letters and what are their taxon names?",
+        "sparql": "SELECT ?item ?taxon_name\nWHERE\n{\n  ?item wdt:P31 wd:Q16521 . # ?item is taxon\n  ?item wdt:P105 wd:Q34740 . # taxon rank is genus\n  ?item wdt:P225 ?taxon_name .\n  FILTER (STRLEN(?taxon_name) = 2)\n}\n"
+    },
+    {
+        "id": "dev_38",
+        "title": "How to retrieve the city of a building with sparql?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2023/09",
+        "question": "For each european knot tyers meeting, give the session number and the start and end dates for each event. In addition, also include the city and specific location (e.g. mesumes, etc.) where it took place (city and specific location only if available).",
+        "sparql": "SELECT DISTINCT ?session ?item ?city ?site ?start ?end\nWHERE {\n  ?item wdt:P393 ?session .\n  ?item wdt:P31 wd:Q112064134 .\n  ?item wdt:P276 ?site .\n  OPTIONAL {?site wdt:P276*/wdt:P131* ?city.\n            ?city wdt:P31/wdt:P279* wd:Q486972.}\n  ?item wdt:P580 ?start .\n  ?item wdt:P582 ?end .\n}\n"
+    },
+    {
+        "id": "dev_39",
+        "title": "African Cinema Content Lacking Wikipedia Pages in Wen",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2024/04",
+        "question": "Who are the Zambian citizens who are screenwriters, film directors, or actors, and what are their exact occupations?",
+        "sparql": "SELECT ?item\nWHERE \n{\n  VALUES ?occ {                   # list of occupations\n    wd:Q28389   # screenwriter\n    wd:Q2526255 # film director\n    wd:Q33999   # actor\n  }\n  \n  ?item wdt:P106/wdt:P279* ?occ . # item has this occupation of a subclass thereof\n  ?item wdt:P106 ?occupation .    # exactly which occupation does the item have\n  ?occupation wdt:P279* ?occ .    # we're only interested in occupations which are related to the above list\n  ?item wdt:P27 wd:Q953.          # country of citizenship\n\n} \n"
+    },
+    {
+        "id": "dev_40",
+        "title": "Modify the displayed Sitelink in the Infolayers on map view",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/03",
+        "question": "What are the primary topics of the articles written in \"Deutschlands merkw\u00fcrdige B\u00e4ume\", and what are their coordinates?",
+        "sparql": "PREFIX schema: <http://schema.org/>\n\nSELECT  ?mainSubjLabel ?coordinates WHERE {\n  wd:Q19172509 wdt:P527 ?Baeume.\n  ?Baeume wdt:P921 ?mainSubj.\n  ?mainSubj wdt:P625 ?coordinates.\n}\n"
+    },
+    {
+        "id": "dev_41",
+        "title": "Find a public company",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2016/08",
+        "question": "Which organizations have the ticker symbol \"FB\", and on which stock exchanges are they listed? Include the organizations, ticker simples, and stock exchanges in the response.",
+        "sparql": "SELECT ?Org ?OrgLabel ?StockExchange ?StockExchangeLabel ?Ticker\nWHERE {\n  ?Org p:P414 ?SE . # look for an entity with a \"stock exchange\" statement\n  ?SE ps:P414 ?StockExchange . # of which we get the value\n  ?SE pq:P249 ?Ticker . # and the \"ticker symbol\" qualifier\n  FILTER(?Ticker=\"FB\") . #and we restrict the value of that qualifier to \"FB\"\n  SERVICE wikibase:label {\n    bd:serviceParam wikibase:language \"en\" .\n  }\n}\n"
+    },
+    {
+        "id": "dev_43",
+        "title": "Query via ID, Retrieving GeoData",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2023/01",
+        "question": "What are the names, GND IDs, birth locations, and coordinates of the birth locations for authors who have the GND ID \"118561359\", with labels provided in German if available?",
+        "sparql": "SELECT ?author ?authorLabel ?GND ?birthLocation ?coordinates WHERE \n{\n  VALUES ?GND {\"118561359\"} \n  ?author wdt:P227 ?GND ;\n    wdt:P19 ?birthLocation .\n  ?birthLocation wdt:P625 ?coordinates .      \n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_Language],de\". }              \n}\n"
+    },
+    {
+        "id": "dev_44",
+        "title": "2002 events in Tokyo",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/01",
+        "question": "What events took place in Tokyo in 2002, including their labels and specific dates?",
+        "sparql": "SELECT ?item ?itemLabel ?when WHERE {\n  ?item wdt:P31/wdt:P279* wd:Q1656682. #item is an event or subclass of an event\n  ?item wdt:P131 wd:Q1490.             #located in the administrative territorial entity of Tokyo prefecture\n  ?item wdt:P585 ?when.                #It has a 'point in time' statement\n  BIND(year(?when) as ?when2)          #from which we extract the year\n  filter(?when2=2002)                  #and filter for 2002\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE]\". }\n}\n"
+    },
+    {
+        "id": "dev_45",
+        "title": "All female vs male writters born in a territorial entity including all the sub-territorial entities",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/11",
+        "question": "What is the count of writers born in Castile and Le\u00f3n, grouped by their gender labels?",
+        "sparql": "SELECT DISTINCT ?genderLabel (count(?gender) as ?count) WHERE {\n\n  ?item wdt:P106 wd:Q36180.\n  ?item wdt:P19/wdt:P131* wd:Q5739.\n  ?item wdt:P21 ?gender.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". }\n} group by ?genderLabel\n"
+    },
+    {
+        "id": "dev_47",
+        "title": "Top 10 of the youngest and the oldest goal scorers and players in tournament history",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/03",
+        "question": "What are the names and dates of birth of the 10 youngest and 10 oldest goal scorers in the UEFA Super Cup? In addition, include when the specific goal in consideration took place, and how old was the player (in days) when that goal took place.",
+        "sparql": "SELECT ?player ?playerLabel ?dob ?goal_date ?goal_age_days\nWITH\n{\n  SELECT ?player ?dob ?date_first ?date_latest ?age_first ?age_latest\n  WHERE\n  {\n    ?player p:P6509 ?p6509stm . # goals\n    ?p6509stm pq:P7124 ?date_first .\n    ?p6509stm pq:P7125 ?date_latest .\n    ?p6509stm pq:P642 wd:Q484028 . # for UEFA Super Cup\n    ?player wdt:P569 ?dob . # Date of birth\n    BIND(?date_first - ?dob AS ?age_first)\n    BIND(?date_latest - ?dob AS ?age_latest)\n  }\n} as %query\nWHERE\n{\n  {\n    SELECT ?player ?dob (?date_first AS ?goal_date) (?age_first AS ?goal_age_days)\n    {\n      INCLUDE %query\n    }\n    ORDER BY ASC(?goal_age_days)\n    LIMIT 10\n  }\n  UNION\n  {\n    SELECT ?player ?dob (?date_latest AS ?goal_date) (?age_latest AS ?goal_age_days)\n    {\n      INCLUDE %query\n    }\n    ORDER BY DESC(?goal_age_days)\n    LIMIT 10\n  }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\nORDER BY ASC(?goal_age_days)"
+    },
+    {
+        "id": "dev_48",
+        "title": "Bug in usage of REGEX",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/08",
+        "question": "What are the distinct trademarks that contain \"mercedes\" in its English name, are owned by an organization, and have a logo image? Please provide their labels in English, the logo images, and the names of the owning organizations.",
+        "sparql": "SELECT DISTINCT ?trademark ?trademarkLabel ?image ?organization WHERE {\n  ?trademark wdt:P31/wdt:P279* wd:Q167270; rdfs:label ?trademarkLabel .\n  FILTER(LANG(?trademarkLabel) = 'en') .\n  FILTER(CONTAINS(LCASE(?trademarkLabel), 'mercedes')) . \n  \n  # that is owned by an instance of organization\n  ?trademark wdt:P127 ?organization .\n  ?organization wdt:P31/wdt:P279* wd:Q43229 .\n  \n  # and has a logo image\n  ?trademark wdt:P154 ?image .\n}\n"
+    },
+    {
+        "id": "dev_49",
+        "title": "A possible (elaborated) solution, using the initial model",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/04",
+        "question": "What is the average number of passengers and the deviation from the average number of passengers for each year after 1985 at the \"JNB\" airport? Return the average number, the deviation, and the year for each tuple.",
+        "sparql": "SELECT ?item ?itemLabel (avg(?number) as ?passenger) (max(avg(?number) - ?number) as ?plus_minus) ?year \nwith {\n  select ?item ?statement ?year ?timevalue ?numberperperiod{\n    ?item wdt:P238 ?IATA\n    VALUES ?IATA {\"JNB\"}.\n    ?item p:P3872 ?statement.\n    ?statement pqv:P585 ?timevalue \n               ; ps:P3872 ?numberperperiod\n               .\n    ?timevalue wikibase:timeValue ?date .\n               \n    MINUS { ?statement wikibase:rank wikibase:DeprecatedRank }\n    bind (YEAR(?date) AS ?year) \n    FILTER (?year >1985) .\n  }\n} as %airport\n \nwhere {\n  {\n    select ?item ?year (sum(?numberperperiod) as ?number) {\n      include %airport .\n      ?timevalue wikibase:timePrecision ?prec filter ( ?prec > 9 )\n    } group by ?item ?year\n  } union {\n      ?timevalue wikibase:timePrecision 9 .\n    bind (?numberperperiod as ?number)\n      include %airport\n  } .\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n} group by ?item ?itemLabel ?year \n  order by ?item desc (?year)\n"
+    },
+    {
+        "id": "dev_51",
+        "title": "Current US legislators sorted by age and schools in the Philippines named after persons",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/02",
+        "question": "Which schools in the Philippines are named after humans, and who are they named after?",
+        "sparql": "# Schools in the Philippines named after humans/persons\nSELECT DISTINCT ?item ?itemLabel ?namedAfter ?namedAfterLabel\nWHERE\n{\n  ?item wdt:P31 / wdt:P279* wd:Q2385804 . # educational institution\n  ?item wdt:P17 wd:Q928 . # in the Philippines\n  ?item wdt:P138 ?namedAfter .\n  ?namedAfter wdt:P31 wd:Q5 . # is human\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\" . }\n}\n"
+    },
+    {
+        "id": "dev_55",
+        "title": "African women queries",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/09",
+        "question": "How many distinct African female citizens described in the Dictionary of African Biography have a Wikipedia article in any language?",
+        "sparql": "select (count(distinct ?person) as ?count) where\n{\n  ?person wdt:P31 wd:Q5. # human\n  ?person wdt:P21 wd:Q6581072. # female\n  ?person wdt:P27/wdt:P30 wd:Q15. # country of citizenship / must be in Africa\n  ?article schema:about ?person ; # has a sitelink\n          schema:isPartOf ?domain .\n  filter(contains(str(?domain),\"wikipedia\")) #sitelink points to a language wikipedia\n  ?person wdt:P1343 wd:Q46002746. # described in Dictionary of African Biography\n}\n"
+    },
+    {
+        "id": "dev_57",
+        "title": "Swiss women politicians involved in foreign affairs and/or international policy",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/08",
+        "question": "Who are the female Swiss citizens who are politicians and are also either diplomats, employed by the United Nations, or employed by an international organization?",
+        "sparql": "SELECT DISTINCT ?item\nWHERE \n{\n ?item wdt:P106 wd:Q82955 .     # is a politician\n {?item  wdt:P106 wd:Q193391 .} # is also a diplomat\n UNION\n {?item wdt:P108/wdt:P361* wd:Q1065 . } # AND/OR employed by the UN\n UNION\n {?item wdt:P108/wdt:P31 wd:Q484652 . } # AND/OR by an international organisation\n ?item wdt:P21 wd:Q6581072.\n ?item wdt:P27 wd:Q39.\n}\n"
+    },
+    {
+        "id": "dev_60",
+        "title": "show source",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/11",
+        "question": "What are the railway stations located in S\u00e3o Paulo?",
+        "sparql": "SELECT ?item ?itemLabel\nWHERE\n{\n  ?item wdt:P31 wd:Q55488 . # Item is railway station\n  ?item p:P131 ?statement .\n  ?statement ps:P131 wd:Q174 . # in S\u00e3o Paulo\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en,pt \" . }            \n}\n"
+    },
+    {
+        "id": "dev_61",
+        "title": "Flourished dates",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/10",
+        "question": "What are the earliest and latest years in which works authored by Albert Einstein were published?",
+        "sparql": "select (min(year(?date)) as ?min_year) (max(year(?date)) as ?max_year ) {\n  values ?author { wd:Q937 }\n  ?author ^wdt:P50/wdt:P577 ?date .\n}\n"
+    },
+    {
+        "id": "dev_62",
+        "title": "specify senators who served in a particular legislative term?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/03",
+        "question": "Who are the distinct individuals who held the position of Massachusetts state senator, excluding those who served in the 1929-1930 Massachusetts legislature? Also, provide the count of their sitelinks if available.",
+        "sparql": "SELECT distinct ?item ?linkcount with { select ?item where\n{\n  ?position wdt:P279* wd:Q20058776 . hint:Prior hint:gearing \"forward\".   \n  ?item p:P39 [ps:P39 ?position \n                      ; pq:P2937 ?leg\n                      ; wikibase:rank ?rank\n              ] .           # position held: Massachusetts state senator\n  filter ( ?leg not in (wd:Q96050576)) .\n  filter (?rank != wikibase:DeprecatedRank)\n   \n} } as %i\nwhere\n{\n  include %i\n  ?item wdt:P793 wd:Q96050576 .                      # significant event: 1929 legislature\n  ?item wdt:P31 wd:Q5 .                            # human\n  OPTIONAL {?item wikibase:sitelinks ?linkcount .} # count of sitelinks  \n} \n"
+    },
+    {
+        "id": "dev_64",
+        "title": "Filtering by Identifier's qualifiers",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2023/02",
+        "question": "How many people, grouped by their country of citizenship, have a Tabakalera ID and are part of the Arteleku collection?",
+        "sparql": "#defaultView:BubbleChart\nSELECT (COUNT(?ser_humano) AS ?count) ?paisLabel WHERE \n{\n  ?ser_humano wdt:P31 wd:Q5 .\n  ?ser_humano wdt:P27 ?pais .\n  ?ser_humano p:P10069 ?statement . \n  ?statement ps:P10069 ?Tabakalera_ID.\n  ?statement pq:P195 wd:Q61070552.\n SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n\n} GROUP BY ?paisLabel \n"
+    },
+    {
+        "id": "dev_67",
+        "title": "list all female employees  and those who have positions at the Bank of England",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/12",
+        "question": "What are the names, dates of birth (if available), and dates of death (if available) of female employees or former employees of the Bank of England?",
+        "sparql": "SELECT ?item ?itemLabel ?date_of_birth ?date_of_death WHERE {\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n  OPTIONAL {  }\n  ?item wdt:P31 wd:Q5;\n    wdt:P21 wd:Q6581072.\n  OPTIONAL { ?item wdt:P569 ?date_of_birth. }\n  OPTIONAL { ?item wdt:P570 ?date_of_death. }\n  ?item wdt:P108 wd:Q183231.\n}\nLIMIT 1000"
+    },
+    {
+        "id": "dev_69",
+        "title": "Select first item in a list of attributes",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/10",
+        "question": "What are the cities in Boulder County, Colorado, and what are their latest population, when and how was that population determined?",
+        "sparql": "#City and town info\n\nSELECT \n  ?item \n  ?itemLabel\n  ?population\n  ?population_date \n  ?population_methodLabel\n\nWHERE \n{\n  ?item p:P31/ps:P31/wdt:P279* wd:Q1093829 . # cities\n  ?county wdt:P131 wd:Q1261 . # where the county is in colorado\n  ?item wdt:P131 wd:Q113029 . # and in boulder county\n\n  ?item wdt:P131 ?county . #  county\n  ?county wdt:P131 ?state . # state\n  \n  OPTIONAL {\n    ?item p:P1082 ?population_statement.\n    ?population_statement ps:P1082 ?population.\n    ?population_statement pq:P585 ?population_date.\n    ?population_statement pq:P459 ?population_method.\n  }\n  \n  FILTER NOT EXISTS {\n    ?item p:P1082/pq:P585 ?population_date_2 .\n    FILTER (?population_date_2 > ?population_date)\n  }\n  \n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". } # Helps get the label in your language, if not, then en language\n}\n\n\n"
+    },
+    {
+        "id": "dev_71",
+        "title": "Query to Obtain City of the Airport [SOLVED]",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/11",
+        "question": "Which airport has the ICAO airport code \"RJAA\" and what place does it serve, along with their respective labels in English?",
+        "sparql": "SELECT ?airport ?airportLabel ?airportIn ?airportInLabel WHERE {\n  ?airport wdt:P239 \"RJAA\".\n  { ?airport wdt:P931 ?airportIn. }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". }\n}\n"
+    },
+    {
+        "id": "dev_78",
+        "title": "Avoiding duplicates",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/08",
+        "question": "What are the details of female individuals who have an Anime News Network person ID and work as a director, television director, anime director, or film director? Please include their names, all their occupations, date of birth (if available), and date of death (if available).",
+        "sparql": "SELECT ?item ?itemLabel ?dateofbirth ?dateofdeath\nWHERE {\n  ?item wdt:P31 wd:Q5 .\n  ?item wdt:P21 wd:Q6581072 .\n  ?item wdt:P1982 ?ANNid .\n  { ?item wdt:P106 wd:Q3455803 } UNION { ?item wdt:P106 wd:Q2059704 } UNION { ?item wdt:P106 wd:Q11284414 } UNION { ?item wdt:P106 wd:Q2526255 }\n  ?item wdt:P106 ?occupation\n  OPTIONAL { ?item wdt:P569 ?dateofbirth . }\n  OPTIONAL { ?item wdt:P570 ?dateofdeath . }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en,ja\" .\n                         ?occupation rdfs:label ?occupationLabel .\n                         ?item rdfs:label ?itemLabel .}\n} group by ?item ?itemLabel ?dateofbirth ?dateofdeath ?ANNid\n"
+    },
+    {
+        "id": "dev_79",
+        "title": "Query not showing the good elements",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/11",
+        "question": "What are the distinct airports located in either Abkhazia (a Russian administrative division in Georgia) or the Republic of Abkhazia (a state with limited recognition in the Caucasus) that are considered to be aerodromes in Wikidata? Please provide their labels, and if available, their coordinates, ICAO airport codes, and IATA airport codes.",
+        "sparql": "SELECT DISTINCT ?airport ?airportLabel (SAMPLE(?coord) AS ?coord) ?ICAO ?IATA WHERE {\n  VALUES ?country { wd:Q23334 wd:Q31354462 }\n  ?airport (wdt:P31/wdt:P279*) wd:Q62447.\n  ?airport wdt:P17 ?country .\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en,fr,[AUTO_LANGUAGE]\". }\n  OPTIONAL { ?airport wdt:P625 ?coord. }\n  OPTIONAL { ?airport wdt:P239 ?ICAO. }\n  OPTIONAL { ?airport wdt:P238 ?IATA. }\n}\nGROUP BY ?airport ?airportLabel ?ICAO ?IATA\n"
+    },
+    {
+        "id": "dev_80",
+        "title": "Identical external IDs",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/09",
+        "question": "Which individuals have the same Transfermarkt ID for both player and manager roles and what are their IDs?",
+        "sparql": "SELECT ?item ?id WHERE { ?item wdt:P2446 ?id; wdt:P2447 ?id }"
+    },
+    {
+        "id": "dev_81",
+        "title": "Wrong query",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/11",
+        "question": "Who are the individuals with Estonian citizenship who were born and died between January 1, 1941, and January 1, 1991?",
+        "sparql": "# Title: Estonia is used as nationality for people dead before 1991-01-01\n# Complex constraint from [[Property talk:Q191]]\n# Items with [[Property:P27|pays de citoyennet\u00e9&#32;<small>(P27)</small>]] equal to [[d:Q191|Estonie <small>(Q191)</small>]] and [[Property:P570|date de mort&#32;<small>(P570)</small>]] before 1991-01-01\nSELECT DISTINCT ?item WHERE {\n  ?item wdt:P27 wd:Q191 .\n  ?item p:P569/psv:P569 ?node_born .\n  ?item p:P570/psv:P570 ?node_dead.\n  ?node_born wikibase:timeValue ?born .\n  ?node_born wikibase:timePrecision ?precision_born.\n  ?node_dead wikibase:timeValue ?dead .\n  ?node_dead wikibase:timePrecision ?precision_dead.\n  FILTER (?born >= \"1941-01-01T00:00:00Z\"^^xsd:dateTime)\n  FILTER (?born < \"1991-01-01T00:00:00Z\"^^xsd:dateTime)\n  FILTER (?dead >= \"1941-01-01T00:00:00Z\"^^xsd:dateTime)\n  FILTER (?dead < \"1991-01-01T00:00:00Z\"^^xsd:dateTime)\n}\n"
+    },
+    {
+        "id": "dev_82",
+        "title": "Elo ratings with two `point in time (P585)`",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/08",
+        "question": "Which items have an Elo rating, along with the Elo rating value and two different points in time associated with that rating, where the first point in time is earlier than the second point in time?",
+        "sparql": "SELECT ?item ?elo ?pit1 ?pit2 WHERE {\n  ?item p:P1087 [ ps:P1087 ?elo; pq:P585 ?pit1; pq:P585 ?pit2 ] .\n  FILTER(?pit1 < ?pit2) .\n}\n"
+    },
+    {
+        "id": "dev_83",
+        "title": "Munzinger person ID but GND missing",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/06",
+        "question": "How many individuals are there who have a Munzinger person ID but do not have a GND ID?",
+        "sparql": "SELECT (COUNT(?item) AS ?count) {\n ?item wdt:P31 wd:Q5.\n ?item wdt:P1284 [] .\n MINUS {?item wdt:P227 [] .}\n} \n"
+    },
+    {
+        "id": "dev_85",
+        "title": "List of Common movies between 2 actors",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/05",
+        "question": "What are the movies in which both Brad Pitt and Leonardo DiCaprio appear together?",
+        "sparql": "SELECT ?movie ?movieLabel\n{\n  ?movie wdt:P31/wdt:P279* wd:Q11424. # movie\n  ?movie wdt:P161 wd:Q35332. # cast member: Brad Pitt\n  ?movie wdt:P161 wd:Q38111. # cast member: Leonardo DiCaprio\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "dev_86",
+        "title": "Dams",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/01",
+        "question": "What are the dams located in Cyprus?",
+        "sparql": "SELECT ?item ?itemLabel \nWHERE \n{\n  ?item wdt:P17 wd:Q229 . \n  ?item wdt:P31/wdt:P279* wd:Q12323 .\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "dev_92",
+        "title": "Number of International Masters awarded per year",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/06",
+        "question": "How many people were awarded the title of International Master by a chess federation in the year 1995?",
+        "sparql": "SELECT (COUNT(*) AS ?cnt) WHERE {\n  ?item p:P2962 [ ps:P2962 wd:Q752119; pq:P580 ?start ] .\n  FILTER(YEAR(?start) = 1995) .\n}\n"
+    },
+    {
+        "id": "dev_98",
+        "title": "Qualifier in FILTER NOT EXISTS",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/09",
+        "question": "What are the distinct municipalities in Quebec that are either local municipalities of Quebec or unorganized areas of Canada? These municipalities should be located within Quebec, should not have a Banque de noms de lieux du Qu\u00e9bec ID, and should not have been dissolved, abolished, demolished, or has ended. ",
+        "sparql": "SELECT DISTINCT ?municip ?municipLabel ?statutLabel ?mrcLabel ?regionLabel  \nWHERE \n{\n    ?municip p:P31 ?statement.\n    {?statement ps:P31/wdt:P279* wd:Q3327873} union {?statement ps:P31 wd:Q3518810}\n    FILTER NOT EXISTS {?statement pq:P582 ?pqfin . } \n    ?municip wdt:P31 ?statut .\n    ?municip wdt:P131 ?mrc .\n    ?mrc wdt:P131 ?region .  \n    ?region wdt:P131 wd:Q176 .\n    Optional {?municip wdt:P2100 ?ctq .}\n    FILTER NOT EXISTS { ?municip wdt:P2100 ?x }\n    FILTER NOT EXISTS { ?municip wdt:P576 ?dissolu}\n    FILTER NOT EXISTS { ?municip wdt:P582 ?end }\n    SERVICE wikibase:label {\n                bd:serviceParam wikibase:language \"en\",\"fr\" .\n        }\n} \nORDER BY ?regionLabel ?mrcLabel ?municipLabel\nLIMIT 1000\n"
+    },
+    {
+        "id": "dev_99",
+        "title": "Disasters starting on Friday 13",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2017/12",
+        "question": "Which disasters, classified as hazards causing significant physical damage, destruction, or death, began on a Friday the 13th? Please provide their start times as well.",
+        "sparql": "# using https://cs.wikipedia.org/wiki/Algoritmus_pro_v%C3%BDpo%C4%8Det_dne_v_t%C3%BDdnu#Zeller%C5%AFv_algoritmus\nSELECT ?disaster ?disasterLabel ?start_time WHERE {\n  ?disaster wdt:P31/wdt:P279* wd:Q3839081 ;\n            wdt:P580 ?start_time .\n  BIND( DAY( ?start_time ) AS ?q ) .\n  FILTER( ?q = 13 ) .\n  BIND( MONTH( ?start_time ) + IF( MONTH( ?start_time ) < 3, 12, 0 ) AS ?m ) .\n  BIND( YEAR( ?start_time ) - IF( MONTH( ?start_time ) < 3, 1, 0 ) AS ?_year ) .\n  BIND( ?_year - FLOOR( ?_year / 100 ) * 100 AS ?K ) . # modulo\n  BIND( FLOOR( YEAR( ?start_time ) / 100 ) AS ?J ) .\n  BIND( ?q + FLOOR( 13 * ( ?m + 1 ) / 5 ) + ?K + FLOOR( ?K / 4 ) + FLOOR( ?J / 4 ) - 2 * ?J AS ?_h ) .\n  FILTER( ?_h - FLOOR( ?_h / 7 ) * 7 = 6 ) . # modulo, 0 is Saturday\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\" } .\n} "
+    },
+    {
+        "id": "dev_101",
+        "title": "Submission from Infrastruktur",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/09",
+        "question": "The number of members in the British House of Commons (House of Commons (Q11005)) varies as members may resign or die and vacancies are filled by by-elections. Find the smallest, largest number of members in the year 2021 and the average number of members for the whole year.",
+        "sparql": "SELECT (sum(?count) / 365 as ?count2) (min(?count) as ?mincount) (max(?count) as ?maxcount)\nWITH {\n  SELECT ?item ?date WHERE {\n  ?item wdt:P31 wd:Q47150325. \n  ?item wdt:P585 ?date . hint:Prior hint:rangeSafe true.\n  filter(\"2021-01-01\"^^xsd:dateTime <= ?date && ?date < \"2022-01-01\"^^xsd:dateTime )\n} } as %dates\nWITH {\n  SELECT ?date (count(?MP) as ?count) WHERE { \n  INCLUDE %dates\n  ?MP p:P39 ?stat . \n  ?stat ps:P39 wd:Q77685926.\n  filter not exists {?stat pq:P580 ?start . filter(?start > ?date ) }        \n  filter not exists {?stat pq:P582 ?end . filter(?end < ?date ) }\n  filter not exists {\n    ?stat pq:P582 ?endt .   \n    ?MP p:P39 ?stat2 . \n    ?stat2 ps:P39 wd:Q77685926.\n    ?stat2 pq:P580 ?endt .\n    filter(str(?stat2) != str(?stat))\n    filter(?endt = ?date)\n    }\n} group by ?date } as %counts\nWHERE\n{\nINCLUDE %counts\n        \n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". } \n} order by desc(?date)"
+    },
+    {
+        "id": "dev_105",
+        "title": "Get bubble chart based on the number of printed matter published each year",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/08",
+        "question": "How many distinct items were published between January 1, 1700, and December 31, 1799, in the municipalities of Bilbao, San Sebasti\u00e1n, Tolosa, and Vitoria-Gasteiz?",
+        "sparql": "SELECT (count(DISTINCT ?item) as ?count)\nWHERE\n{\n  VALUES ?place {wd:Q8692 wd:Q10313 wd:Q497801 wd:Q14318}\n  ?item wdt:P291 ?place.\n  ?item wdt:P577 ?publishing_date . \n  FILTER(?publishing_date >= \"1700-01-01\"^^xsd:dateTime && ?publishing_date <= \"1799-12-31\"^^xsd:dateTime)\n  BIND(YEAR(?publishing_date) as ?year_)\n}\n"
+    },
+    {
+        "id": "dev_113",
+        "title": "Gender breakdown of organizations (that are \"part of\" bigger organizations)?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/05",
+        "question": "How many current board members, grouped by their gender, for organizations that are part of the DAX index? Only include the best avaialble gender.",
+        "sparql": "SELECT ?gender ?genderLabel (COUNT(?board_member) AS ?count)\n{\n  wd:Q155718 wdt:P527 ?item.\n  ?item p:P3320 ?board_member_statement.\n  ?board_member_statement a wikibase:BestRank.\n  ?board_member_statement ps:P3320 ?board_member.\n  FILTER NOT EXISTS { ?board_member_statement pq:P582 []. } # There must be no endtime\n  ?board_member wdt:P21 ?gender.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],de,en\". }\n}\nGROUP BY ?gender ?genderLabel\n"
+    },
+    {
+        "id": "dev_117",
+        "title": "Find the today's featured article or a range (from the start to today for example)",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/04",
+        "question": "Among Pablo Picasso, Salvador Dal\u00ed, and NASA, filter those that are humans. Then group by their sex or gender. The response should be a list, containing how many are for which gender.",
+        "sparql": "SELECT ?genderLabel (COUNT(DISTINCT ?person) AS ?number) WHERE {\n  VALUES ?person {\n    wd:Q5593\n    wd:Q23548\n    wd:Q5577\n  }\n  ?person wdt:P31 wd:Q5;\n    wdt:P21 ?gender.\n  SERVICE wikibase:label {\n    bd:serviceParam wikibase:language \"en\".\n    ?gender rdfs:label ?genderLabel.\n  }\n}\nGROUP BY ?gender ?genderLabel\n"
+    },
+    {
+        "id": "dev_119",
+        "title": "1990 WTA Tour",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/10",
+        "question": "What are the details of each tennis tournament edition that is part of the 1990 WTA Tour? Include the year, start time, end time, country, surface played on, location, and prize money, all if available.",
+        "sparql": "#based on a query by User:Lepticed7: https://w.wiki/ewx\nSELECT ?item ?itemLabel ?y ?start ?end ?countryLabel ?surfaceLabel ?locationLabel ?prize\nWHERE\n{\n  ?item wdt:P31 wd:Q47345468;\n    wdt:P361 wd:Q1134303.\n  OPTIONAL { ?item wdt:P585 ?y0 . BIND(YEAR(?y0) as ?y) }\n  OPTIONAL { ?item wdt:P580 ?start. }\n  OPTIONAL { ?item wdt:P582 ?end. }\n  OPTIONAL { ?item wdt:P17 ?country. }\n  OPTIONAL { ?item wdt:P765 ?surface. }\n  OPTIONAL { ?item wdt:P276 ?location. }\n  OPTIONAL { ?item wdt:P2121 ?prize } \n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n\n"
+    },
+    {
+        "id": "afb1c03c10378a56a0682c8d0d8de761db39b8860d46fedb4ee9445932aa4698",
+        "title": "GLAMs in Germany that are publicly funded",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/07",
+        "question": "What are the galleries, libraries, archives, and museums in Germany, along with types (e.g., are they mesumes, libraries, visitor centers?) and types, excluding those operated by businesses?",
+        "sparql": "SELECT DISTINCT ?GLAM ?GLAMLabel ?Betreiber ?BetreiberLabel ?ist_ein_e_ ?ist_ein_e_Label WHERE {\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n  ?GLAM (wdt:P31/wdt:P279*) wd:Q1030034.\n  ?GLAM wdt:P137 ?Betreiber.\n  ?GLAM wdt:P17 wd:Q183. \n  MINUS { ?Betreiber wdt:P31 wd:Q4830453. }\n  ?GLAM wdt:P31 ?ist_ein_e_. \n}\n"
+    },
+    {
+        "id": "3c5956b2d846d87e126d95c6c4c8b3551f8b508d002ff489469d12f396c68231",
+        "title": "Area chart of populations compared",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/01",
+        "question": "How many people are in each district located in the town of Kremmen, Germany year-by-year? In other words, in your response, include the year, district, and the population for each tuple.",
+        "sparql": "#defaultView:AreaChart\nSELECT (str(YEAR(?pointInTime)) AS ?Jahr) ?Einwohnerzahl ?OrtsteilLabel ?Ortsteil   \nWHERE  \n{\n  ?Ortsteil wdt:P131? wd:Q587094.\n  ?Ortsteil p:P1082 ?populationStatement.\n  ?populationStatement ps:P1082 ?Einwohnerzahl. \n  ?populationStatement pq:P585 ?pointInTime.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "6a36c62acd2f2e0af354b16a2309718a509da8709b98f4bf8e113ac8c9a68cec",
+        "title": "Why some optional \"?use\" values show up but not others?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/04",
+        "question": "What are the emergency phone numbers in each country, along with the main uses of these numbers (if available), ordered by country and phone number? Return for each county, their emergency number and, if available, the main uses of that number",
+        "sparql": "SELECT ?country ?number ?use WHERE {\n ?country p:P2852 ?p2852stm .\n ?p2852stm ps:P2852 ?number . \n OPTIONAL { ?p2852stm pq:P366 ?use }\n} \nORDER BY ?countryLabel ?numberLabel\n"
+    },
+    {
+        "id": "6be363fa2dd1e49a079354d11bdd7445064e42a3cdbc90c333b5c52197e967af",
+        "title": "Siblings with close dates of birth",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/04",
+        "question": "What are the pairs of siblings who have a male parent with Japanese citizenship, are born less than 300 days apart, and are not twins (i.e., not born on the same day)? Also return for each pair, their birthdays",
+        "sparql": "SELECT ?child1 ?child1Label ?birth1 ?child2 ?child2Label ?birth2\nWHERE\n{\n  # Find 2 siblings\n  ?parent wdt:P31 wd:Q5.\n  ?parent wdt:P21 wd:Q6581097. # Parent is male, could also have been wd:Q6581072 (female)\n  ?parent wdt:P40 ?child1.\n  ?parent wdt:P40 ?child2.\n  ?parent wdt:P27 wd:Q17\n  FILTER (?child1 != ?child2)\n\n  ?child1 p:P569 ?birth1_statement.\n  ?birth1_statement psv:P569 ?birth1_value.\n  ?birth1_value wikibase:timePrecision 11 . # Use values with precision day only.\n  ?birth1_value wikibase:timeValue ?birth1.\n\n  ?child2 p:P569 ?birth2_statement.\n  ?birth2_statement psv:P569 ?birth2_value.\n  ?birth2_value wikibase:timePrecision 11 . # Use values with precision day only.\n  ?birth2_value wikibase:timeValue ?birth2.\n\n  FILTER (?birth1 < ?birth2 &&              # Eliminate twins born same say and select each sibling pair only once\n          ?birth2 - ?birth1 < 300)          # They must be born less than a year apart\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}"
+    },
+    {
+        "id": "18f0fb3336951b1c21b1a0e520e7cf6c373157f5fa3d759c7205cee96e8d9fc3",
+        "title": "obtain label of subclasses of the selection, while excluding the starting class",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/06",
+        "question": "Who are people with occupations that are subclasses of \"journalist\" (but excluding those with only \"journalist\" as their occupation), ordered by the item labels, with a limit of 100 results? Return also their occupations",
+        "sparql": "SELECT ?item ?itemLabel ?occ WHERE {\n  ?item wdt:P106 ?occ.                 #item has an occ\n  ?occ wdt:P279* wd:Q1930187 .         #occ is a subclass of journalist, or journalist\n  filter(?occ not in (wd:Q1930187))    #don't include rows that equal \"journalist\", but the item's P106 ''may still have \"journalist\"''\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\nORDER BY ?itemLabel\nLIMIT 100 # number of rows ~12000\n"
+    },
+    {
+        "id": "c7b7959708e146b057103e19d9202629d03d4c2a5be3dd44c2ccdaf5b37c7466",
+        "title": "Repeated items in the results",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/10",
+        "question": "What are the publications or printed materials published between January 1, 1700, and December 31, 1799 (both inclusive), in Bilbao, San Sebasti\u00e1n, Tolosa, Vitoria-Gasteiz, Pamplona, or Bayonne? Please provide their labels, coordinates of the place of publication, and publication dates.",
+        "sparql": "SELECT ?item ?label ?coord ?place ?argitaratze_data WHERE {\n  VALUES ?type {\n    wd:Q732577 wd:Q1261026\n  }\n  ?item wdt:P31/wdt:P279* ?type;\n    wdt:P577 ?argitaratze_data.\n  FILTER((?argitaratze_data >= \"1700-01-01\"^^xsd:dateTime) && (?argitaratze_data <= \"1799-12-31\"^^xsd:dateTime))\n  VALUES ?place {wd:Q8692 wd:Q10313 wd:Q497801 wd:Q14318 wd:Q10282 wd:Q134674}  \n  ?item wdt:P291 ?place.\n  ?place wdt:P625 ?coord.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en,eu\". }\n}\n"
+    },
+    {
+        "id": "0a81623b9fe960177b7767821ba6bb8fe7caa465457457a8fadfc1d7b55ff949",
+        "title": "How to remove duplicate query results (based on the values of the results)?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2023/11",
+        "question": "Who have resided in Paris, including their start and end times of residence if available, where the residence period includes or overlaps with the month of September 1977, ordered by the start time?",
+        "sparql": "select DISTINCT ?entity ?entityLabel ?starttime ?endtime\n            where\n            {\n            ?entity wdt:P31 wd:Q5 .\n            ?entity p:P551 ?statement . \n            ?statement ps:P551 wd:Q90 .\n            OPTIONAL {?statement pq:P580 ?starttime . }\n            OPTIONAL {?statement pq:P582 ?endtime  . }                 \n            FILTER((?starttime <= \"1977-09-01\"^^xsd:dateTime && \"1977-10-01\"^^xsd:dateTime <= ?endtime) || (\"1977-09-01\"^^xsd:dateTime <= ?starttime && ?starttime <= \"1977-10-01\"^^xsd:dateTime) || (\"1977-09-01\"^^xsd:dateTime <= ?endtime && ?endtime <= \"1977-10-01\"^^xsd:dateTime))\n              SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". }\n            } GROUP BY ?entity ?entityLabel ?starttime ?endtime \n            ORDER BY ?starttime\n"
+    },
+    {
+        "id": "0a38bef75a557fe292202ee38a349e911fa5e9322417eee438b7146c9f77da22",
+        "title": "Ships with multiple operators that do not have multiple official names",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2023/10",
+        "question": "What are the distinct frigates that have at least two different operators and do not have an official name qualifier associated with each operator? Please provide their labels as well.",
+        "sparql": "SELECT distinct ?item ?itemLabel WHERE {\n  ?item wdt:P31 wd:Q161705 .\n  ?item wdt:P137 ?operator1.\n  ?item wdt:P137 ?operator2.\n  filter (str(?operator1) != str(?operator2) )\n  filter not exists {?item p:P1448/pq:P137 ?operator1 . }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE]\". }  \n} order by ?itemLabel\n"
+    },
+    {
+        "id": "de08487dabe35552549f055b14427a1115cbbdd7b477f85f8393ea13df51e6ae",
+        "title": "Honda Sports Award alma mater",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/07",
+        "question": "Who are the recipients of the Honda Sports Award and their alma maters (if available)?",
+        "sparql": "SELECT DISTINCT ?person ?school\nWHERE {\n  ?person wdt:P166/wdt:P31 wd:Q5892712.\n  OPTIONAL\n  {\n    ?person wdt:P69 ?school .\n    ?school wdt:P31 / wdt:P279 * wd:Q38723 .\n  }\n\n}\n"
+    },
+    {
+        "id": "b014f46fba6e9a0e8aa2e1822c9a417781cc4549d0ec3dea8b242119a160958c",
+        "title": "Number of links of \"what links here\" in Wikipedia for Italian Books 1980-2021",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/03",
+        "question": "What are the books or literary works published after January 1, 1980, has an English label, originating from Italy? Include their titles and authors' names in their native language. In addition, for each one, count the number of other entities that have an edge pointing towards it.",
+        "sparql": "SELECT ?item ?label ?authorlabel (COUNT(?anotherItem) AS ?inbound_links) WHERE {\n  VALUES ?type {\n    wd:Q571\n    wd:Q7725634\n  }\n  ?item wdt:P31 ?type;\n    wdt:P577 ?date;\n    wdt:P50 ?author.\n  ?author wdt:P1559 ?authorlabel.\n  FILTER((LANG(?label)) = \"en\")\n  FILTER(?date > \"1979-01-01T00:00:00Z\"^^xsd:dateTime)\n  ?item rdfs:label ?label.\n  FILTER((LANG(?label)) = \"en\")\n  ?item wdt:P495 wd:Q38.\n  OPTIONAL {?anotherItem ?predicate ?item .\n  ?property wikibase:directClaim ?predicate .}\n\n}\nGROUP BY ?item ?label ?authorlabel"
+    },
+    {
+        "id": "04ca92e08280053ed80f6050ec92e70074996c315a400b240bc8c6ab8b20d839",
+        "title": "Check on multiple qualifiers",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/08",
+        "question": "Which items have a identifier for the Enciclopedia Italiana on Treccani website with an author qualifier, excluding those authored by Goffredo Coppola?",
+        "sparql": "SELECT DISTINCT ?item\nWHERE {\n  ?item p:P4223 ?ei .\n  ?ei pq:P50 ?author .\n  FILTER (?author != wd:Q3772798 )\n}\n"
+    },
+    {
+        "id": "ac5fc306788a95286f528077bf1a850a509c1673741400c3bdf42b6854ac488e",
+        "title": "Query to identify the [[Property:`cast member (P161)`|actors who were in]] [[`film (Q11424)`|films]] [[Property:`filming location (P915)`|shot in]] [[`Category:Films shot in Georgia (U.S. state) (Q7140743)`|Georgia]].",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/11",
+        "question": "What are the films shot in Georgia, USA, and who are their cast members?",
+        "sparql": "SELECT DISTINCT ?film ?filmLabel ?castmember ?castmemberLabel\nWHERE\n{\n  ?film wdt:P31 wd:Q11424 .\n  ?film wdt:P915/wdt:P131* wd:Q1428 . # shot in a location in Georgia (US state)\n  ?film wdt:P161 ?castmember .\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\" } .\n}\n"
+    },
+    {
+        "id": "e2ea23358511dc67b129dde66f03c444e4abf0deab44c5183459004da4e423dd",
+        "title": "Remove Duplicate",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/07",
+        "question": "Who are the writers that were either born or died in the canton of Vaud? Also return their birthplaces and death places.",
+        "sparql": "#\u00e9crivain n\u00e9-e ou mort-e dans la Canton de Vaud \nSELECT ?ecrivain ?ecrivainLabel ?lieuNaissance ?lieuMort\nWHERE \n{\n  ?ecrivain wdt:P31 wd:Q5.\n  ?ecrivain wdt:P106 wd:Q36180.\n   {?ecrivain wdt:P19 ?lieuNaissance.\n  ?lieuNaissance wdt:P131 wd:Q12771.}\n    UNION\n  {?ecrivain wdt:P20 ?lieuMort.\n  ?lieuMort wdt:P131 wd:Q12771.}\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],fr\". }\n}\nORDER BY ?ecrivainLabel\n"
+    },
+    {
+        "id": "6741e9c21abbe896cdceb1c01c84f40df38a699d460b66d90401f9fe9eb4705a",
+        "title": "`Echinodermata (Q44631)`",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/01",
+        "question": "What are the taxa within the phylum Echinodermata, including all levels of parent taxa, along with their labels and taxon ranks, ordered by their english label alphabetically and select the top 100?",
+        "sparql": "SELECT ?item ?itemLabel ?rank\nWHERE \n{\n  ?item wdt:P171/wdt:P171* wd:Q44631.\n  ?item wdt:P105 ?rank.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n} order by ?itemLabel LIMIT 100"
+    },
+    {
+        "id": "2abb29dda184146b7c7e30299a0d51d7e21c7d668914bd5b3f43a166684d0136",
+        "title": "Scholarly articles with images on Commons",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/09",
+        "question": "What are the scholarly articles published in the peer-reviewed open-access journal ZooKeys in 2018, including their publication dates, and if available, their Wikimedia Commons categories and links to their Wikimedia Commons pages? Order results by their publication dates from oldest to newest.",
+        "sparql": "SELECT ?item ?date ?commonscat WHERE {\n  ?item wdt:P1433 wd:Q219980; wdt:P577 ?date; wdt:P31 wd:Q13442814 .\n  FILTER(YEAR(?date) = 2018) .\n  OPTIONAL { ?item wdt:P373 ?commonscat }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language 'en' }\n} ORDER BY ASC(?date)\n"
+    },
+    {
+        "id": "9938b600c69cbfb018e722976f77fd1ee5df27bf04dcb2436466cac1d0330e29",
+        "title": "how many trans-people in Wikidata?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/01",
+        "question": "How many humans in Wikidata are identified as non-binary, intersex, trans woman, or trans man, along with their respective labels?",
+        "sparql": "SELECT ?sex ?sexLabel ?count\nWITH\n{\n    SELECT ?sex (COUNT(?human) AS ?count)\n    WHERE\n    {\n        ?human wdt:P31 wd:Q5.\n        ?human wdt:P21 ?sex.\n       VALUES ?sex {wd:Q48270 wd:Q1097630 wd:Q1052281 wd:Q2449503}.\n    }\n    GROUP BY ?sex\n} AS %results\nWHERE\n{\n    INCLUDE %results.\n    SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "a925ada4a5585e1633cd72a2ab58d1f12fd35f9d796701fe3adb69c04ddb0b67",
+        "title": "List of teachers and the Querybuilder",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/11",
+        "question": "Who are citizens of Norway that have held a position as a teacher or a subclass of teacher, along with their labels, dates of birth (if available), and Norwegian historical register of persons IDs (if available)?",
+        "sparql": "    SELECT DISTINCT ?item ?P569 ?P4574 WHERE {\n      ?item wdt:P27 wd:Q20.\n      ?item wdt:P39/wdt:P279* wd:Q37226.\n      OPTIONAL { ?item wdt:P569 ?P569. }\n      OPTIONAL { ?item wdt:P4574 ?P4574. }\n    }"
+    },
+    {
+        "id": "35b281aac5fd63acd70949996941722b2185f83a623822ac1bd4be425b37d116",
+        "title": "Papers with the most authors",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/03",
+        "question": "What are the scholarly articles that have an author with a series ordinal of \"1000\", and what is the highest series ordinal value for each of these articles, ordered by the highest series ordinal value in descending order? So, the answer should be article 1 has the highest ordinal of 5000, article 2 has the highest ordinal of 4000, etc.",
+        "sparql": "SELECT ?paper ?paperLabel ?count\nWITH {\n  SELECT ?paper WHERE {  \n     ?paper wdt:P31 wd:Q13442814.\n     ?paper p:P2093/pq:P1545 \"1000\" .\n  }\n} AS %papers \nWITH {\n  SELECT ?paper (MAX(xsd:integer(?val)) AS ?count) WHERE {\n     INCLUDE %papers .\n     ?paper p:P2093/pq:P1545 ?val .\n  } GROUP BY ?paper \n} AS %author_count\nWHERE {\n   INCLUDE %author_count .\n   SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}                  \nORDER BY DESC(?count)\n"
+    },
+    {
+        "id": "4ac150a80de7d27982c2b5acfbf15ba60089848387451db50fcb184ebf9f625c",
+        "title": "Select theatrical version if version label is available",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2023/12",
+        "question": "What are the films that have won the Academy Award for Best Picture, with only those that have a theatrical version length listed on Wikidata? For each such film, also include its director (if available) and duration (if available).",
+        "sparql": "#BestPictureWinners\nSELECT DISTINCT ?filmLabel ?duration ?film\nWHERE \n{\n  ?film wdt:P31 wd:Q11424. #is a film\n  ?film wdt:P166 wd:Q102427 . # won best picture\n  \n  OPTIONAL {?film wdt:P57 ?director.}\n  OPTIONAL {?film p:P2047 ?durationStatement.}\n  OPTIONAL {?durationStatement ps:P2047 ?duration.}\n            ?durationStatement a wikibase:BestRank.\n  OPTIONAL {?durationStatement pq:P518 ?version.} #version: cut of film (e.g. director's cut)\n  \n  FILTER(CONTAINS(?versionLabel, \"theatrical\")).\n  \n  SERVICE wikibase:label { \n    bd:serviceParam wikibase:language \"en\".\n    ?film rdfs:label ?filmLabel.\n    ?version rdfs:label ?versionLabel.\n  }\n}\nORDER BY (?filmLabel)\n"
+    },
+    {
+        "id": "1ac279a4ca0b912c0bef23ad282bb2a13129143de36096f8d24ad5b0c74acdd7",
+        "title": "All movies that won the awards",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/03",
+        "question": "Who are the actresses that have won either the Academy Award for Best Supporting Actress or the Academy Award for Best Actress? Return a a tuple of the actress, the actress's IMBD ID (if available), the associated movie, and the associated movie's IMBD ID (if available).",
+        "sparql": "SELECT DISTINCT ?actor ?actor_IMBD ?movie ?movie_IMBD\n{\n  VALUES ?award {\n    wd:Q106301 # Academy Award for Best Supporting Actress\n    wd:Q103618 # Academy Award for Best Actress\n    # Add more awards here\n  }\n  {\n    # The award statement is normal placed at the actor\n    ?actor p:P166 ?award_statement .\n    ?award_statement ps:P166 ?award .\n    ?award_statement pq:P1686 ?movie . # \"for work\" qualifier\n  }\n  UNION\n  {\n    # The award statement is also sometimes placed at movie\n    ?movie p:P166 ?award_statement .\n    ?award_statement ps:P166 ?award .\n    ?award_statement pq:P1346 ?actor . # \"winner\" qualifier\n  }\n  OPTIONAL { ?movie wdt:P345 ?movie_IMBD . }\n  OPTIONAL { ?actor wdt:P345 ?actor_IMBD . }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "2d23a1c0efb9064629d95afb676b11c9c32307f5e9b4a94111585aa3850cc28d",
+        "title": "Twins with different place of birth",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/02",
+        "question": "Which items have a sibling who shares the same date of birth, but the sibling does not have a reciprocal sibling relationship back to the item? Return the item and their sibliing in each tuple, and no duplicate tuples.",
+        "sparql": "SELECT DISTINCT ?item ?itemLabel ?sibling ?siblingLabel  \nWHERE \n{\n  ?item wdt:P3373 ?sibling.\n  ?item wdt:P569 ?dob .\n  ?sibling wdt:P569 ?dob .\n  filter not exists {?sibling wdt:P3373 ?item .}\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "badbe0dd598da2dfa2b911582d553e994ea6230d44c5e2ceda440c67b8cb48a3",
+        "title": "Data issue discussion",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/12",
+        "question": "What are the cities that are considered to be urban municipalities in Germany, independent cities of Germany, district capitals, Greater district towns, large district towns, large independent cities of Lower Saxony, or medium-sized district towns (in Germany)? Only return those that are still currently considered so (i.e., no end time qualifier). Return the city and the start date (if available) it is considered to be of that status.",
+        "sparql": "SELECT distinct ?item ?itemLabel ?urban_municipality_rankLabel ?start_date ?end_date WHERE {\n  VALUES ?type {wd:Q42744322 wd:Q22865 wd:Q134626 wd:Q448801 wd:Q1548518 wd:Q1548525 wd:Q54935786}\n  ?item p:P31/p:P279* ?statement .\n  ?statement ps:P31 ?type.\n  optional {?statement pq:P580 ?start_date . }\n  optional {?statement pq:P582 ?end_date . }\n  filter not exists {?statement pq:P582 ?end_date . }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n} order by ?itemLabel\n"
+    },
+    {
+        "id": "cfde298d2462f506bbb8628cac48e7e30468e12c5f8d5f9039b0fc429284da59",
+        "title": "List composers residences",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/08",
+        "question": "Who are composers that have lived in either Los Angeles or New York City? For each composer, determine whether they lived longer in LA or NYC. Return a list of 3-tuples in your response, consisting of: (the composer, x, y) where x should be \"LA\" if they lived in LA longer and empty if they lived in \"NYC\" longer, similar for y. So, for instance, if composer \"Olivia Rodrigo\" lived in NYC longer, you should return (Olivia Rodrigo, \"\", \"NYC\"), and they lived in LA longer then you should return (Olivia Rodrigo, \"LA\", \"\")",
+        "sparql": "SELECT DISTINCT ?composer ?composerLabel (MAX(?LA) AS ?Los_Angelses) (MAX(?NYC) AS ?New_York)\nWHERE\n{\n  VALUES ?residence { wd:Q65 wd:Q60 } # Los Angeles, New York\n  ?composer wdt:P31 wd:Q5 . # ?composer is human\n  ?composer wdt:P106 / wdt:P279 * wd:Q36834 . # ?composer is composer\n  ?composer wdt:P551 / wdt:P131 * ?residence .\n  BIND (IF (?residence = wd:Q65, \"LA\", \"\") AS ?LA)\n  BIND (IF (?residence = wd:Q60, \"NYC\", \"\") AS ?NYC)\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\nGROUP BY ?composer ?composerLabel\n"
+    },
+    {
+        "id": "298f5f8dfe39ce952fb5dc11552c3281cb38c4beea95d4e81d2a376b2bb2475d",
+        "title": "multiple querrys in one",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/05",
+        "question": "What are the items that are either located in Argentona, have Argentona as their place of birth, place of death, or residence?",
+        "sparql": "SELECT ?Argentona WHERE {\n  { ?Argentona wdt:P131 wd:Q11539 } union\n  { ?Argentona wdt:P19 wd:Q11539 } union\n  { ?Argentona wdt:P20 wd:Q11539 } union\n  { ?Argentona wdt:P551 wd:Q11539 } \n}\n"
+    },
+    {
+        "id": "65bebeb065b5fdea329074c863af378d9e2470a04f4c7e7fd73aa1fca2737c5b",
+        "title": "All NGOs with revenue in 2017",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/02",
+        "question": "Which nonprofit organizations had a total revenue in 2017? Please include the organization's name, the revenue amount, the unit of the revenue, and the specific point in time.",
+        "sparql": "SELECT ?item ?itemLabel ?revenue ?unitLabel ?time\nWHERE \n{\n  ?item wdt:P31/wdt:P279* wd:Q163740 . \n  ?item p:P2139 ?stat.\n  ?stat psv:P2139/wikibase:quantityAmount ?revenue . \n  ?stat psv:P2139/wikibase:quantityUnit ?unit. \n  ?stat pq:P585 ?time .\n  FILTER(\"2017-00-00\"^^xsd:dateTime <= ?time &&\n         ?time < \"2018-00-00\"^^xsd:dateTime)\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". } \n}\n"
+    },
+    {
+        "id": "68812530cc9aaa9d68896f0f989a001ba776fa52e5fcf7c1ad227eeb69c88433",
+        "title": "Time out",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/09",
+        "question": "What are the distinct border checkpoints that are part of the Schengen Area border, excluding those that have been dissolved, are part of an open border, a maritime boundary, the Inner German border, or air borders? Please include their labels and coordinates, if available.",
+        "sparql": "#defaultView:Map\nSELECT distinct ?item ?itemLabel ?coord WHERE {\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n  ?item wdt:P31 wd:Q757292 .#checkpoints\n  ?item wdt:P361*/wdt:P31/wdt:P279* wd:Q67371697 . #located on a Schengen border\nMINUS { ?item wdt:P576 _:b2. } #Remove dissolved\nMINUS { ?item wdt:P361 wd:Q17163396. } #Remove open borders\nMINUS { ?item wdt:P361 wd:Q3089219. } #Remove maritime borders\nMINUS { ?item wdt:P361 wd:Q700754. } #Remove RFA-RDA borders\nMINUS { ?item wdt:P361 wd:Q67218438. } #Remove air borders\nOPTIONAL { ?item wdt:P625 ?coord. }\n}\n"
+    },
+    {
+        "id": "cfca6274fe0cf4d0dc26149cb75acb644877e37388776a43c31e7895523bfb6d",
+        "title": "Taxonomic class for Critter of the Week",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/11",
+        "question": "Which taxa have been described by the New Zealand radio programme \"Critter of the Week\" that also have a common name in English? Each taxon should also be itself a class or has a parent (can be recursive) that is a class. Include in each tuple the taxon, (one of) its English common name, and the taxon that is a class.",
+        "sparql": "SELECT ?item ?taxon_common_name ?parent ?parentLabel WHERE {\n?item wdt:P1343 wd:Q58450498;\n      wdt:P1843 ?taxon_common_name .\n  ?item wdt:P171* ?parent . \n  ?parent wdt:P105 wd:Q37517 .\n  FILTER (langMatches( lang(?taxon_common_name), \"en\" ) )\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "70032686a534cc153df0af6f7849babbc1f75571972e6d44a23ee93547b24d16",
+        "title": "Group minor results",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/06",
+        "question": "What are the different occupations of individuals who have a Vatican Library VcBA ID, and how many distinct individuals are there for each occupation, ordered by the count in descending order?",
+        "sparql": "SELECT ?type (COUNT(DISTINCT ?item) AS ?count) WHERE {\n  ?item wdt:P8034 ?id .\n  ?item wdt:P106 ?occ .\n  BIND(?occ AS ?type)\n}\nGROUP BY ?type\nORDER BY DESC(?count)\n"
+    },
+    {
+        "id": "0e7ce0bb2191a9b00237ca420bf7bdea1290e0b0a2f35488af80e3fb9b382aa0",
+        "title": "Wikidata property related to politics",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/09",
+        "question": "What are the Wikidata properties related to politics that are also used as identifiers?",
+        "sparql": "SELECT ?Wikidata_egenskap_knyttet_til_politikk ?Wikidata_egenskap_knyttet_til_politikkLabel WHERE {\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n  ?Wikidata_egenskap_knyttet_til_politikk wdt:P31 wd:Q22984475.\n  ?Wikidata_egenskap_knyttet_til_politikk wdt:P31 wd:Q19847637\n}"
+    },
+    {
+        "id": "791ec420ab4179d94a6df023cb9cd8de373c063a082a423d3a46ca3e199e4dda",
+        "title": "wikibase:around not including itself",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2023/05",
+        "question": "What are the bunkers located within a 30 km radius around the Gravesend Cold War Bunker?",
+        "sparql": "SELECT DISTINCT ?item WHERE {\n  {\n    SELECT DISTINCT ?item  WHERE {\n      wd:Q26676412 wdt:P625 ?targetLoc .\n      SERVICE wikibase:around {\n        ?item wdt:P625 ?location .\n        bd:serviceParam wikibase:center ?targetLoc .\n        bd:serviceParam wikibase:radius \"30\" .\n        bd:serviceParam wikibase:distance ?dist.\n      }\n      ?item wdt:P31/wdt:P279* wd:Q91122. # bunker\n    }\n  }\n}"
+    },
+    {
+        "id": "dc871e4406f01fce8a42c79df8f7811c59d2d08c9a5856b91c9e68c7660faf4d",
+        "title": "Universities that existed in Berlin in 1890",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2016/08",
+        "question": "Which universities located in Berlin were founded before 1890, excluding those that were dissolved, abolished, or demolished before 1890? Please include their founding dates.",
+        "sparql": "SELECT DISTINCT ?university ?founded WHERE {\n  { { SELECT DISTINCT ?subclass { ?subclass wdt:P279* wd:Q3918 } } } .\n  ?university wdt:P131+ wd:Q64;\n              wdt:P31 ?subclass;\n               wdt:P571 ?founded .\n  FILTER( YEAR( ?founded ) < 1890 ) .\n  MINUS {\n    ?university wdt:P576 ?date .\n    FILTER( YEAR ( ?date ) < 1890 ) .\n  } .\n} "
+    },
+    {
+        "id": "7302bb9f6b2e64c0ae3f0782e76cc3b9117a6e8e69fabf0478d7db3da3b331cc",
+        "title": "Description containing a certain word",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2017/09",
+        "question": "What are the items listed on the National Heritage List for England that have a label containing the word \"cinema\" (case insensitive) but are not instances of a movie theater?",
+        "sparql": "SELECT ?item WHERE {\n        ?item wdt:P1216 [] .\n        ?item rdfs:label ?itemLabel. \n        FILTER(CONTAINS(LCASE(?itemLabel), \"cinema\"@en)). \n        MINUS {?item wdt:P31 wd:Q41253} .\n    }"
+    },
+    {
+        "id": "ddfb9d48778387e57b79cdb1199434641a29498cf4775e8ae69610055b86c02c",
+        "title": "Access Wikidata property qualifiers",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/04",
+        "question": "What are the headquarters locations of the companies Apple, Amazon, Microsoft, Meta, and Google, including the cities, specific location if available (e.g. Apple Park), and states in the United States where these headquarters are located? Include in your response for each company, its specific location (if available), the city, and the state.\n",
+        "sparql": "SELECT DISTINCT \n  ?company\n  ?location\n  ?city\n  ?state\nWHERE \n{\n  VALUES ?company {wd:Q312 wd:Q3884 wd:Q2283 wd:Q380 wd:Q95}\n\n  ?company p:P159 ?HQ_statement .\n  ?HQ_statement ps:P159 ?city . # company hq location\n\n  OPTIONAL { ?HQ_statement pq:P276 ?location . } # qualifier for HQ's location\n\n  ?city wdt:P131+ ?state . # located in territorial entity\n  ?state wdt:P31 wd:Q35657 . # territorial entity is instance of 'state'\n}\nGROUP BY ?company ?location ?city ?state\nORDER BY ASC(?company)"
+    },
+    {
+        "id": "ca1bdbff9b1592b7cb262ebb8edb578828252d989a2165df93a4bb294d7dc056",
+        "title": "Member of EU (without UK)",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/12",
+        "question": "Who are the current members of the European Union, ordered by their names in English?",
+        "sparql": "select ?item ?itemLabel where {\n  \n ?item p:P463 ?stm.\n ?stm ps:P463 wd:Q458.\n MINUS { ?stm pq:P582 [] . }\n SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\" . }\n \n} order by (?itemLabel)\n"
+    },
+    {
+        "id": "c3d78787b16d3efe2717472750df0f2f1e2fec7234e1e83eec409b716bbd488d",
+        "title": "Excluding imprecise dates from the results",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/05",
+        "question": "What are the names and dates of birth of individuals who have held the position of Pope, ensuring that the dates of birth are precise to the day?",
+        "sparql": "SELECT ?item ?itemLabel ?dob\nWHERE\n{\n  ?item wdt:P39 wd:Q19546.\n  ?item p:P569 ?dob_statement.\n  ?dob_statement psv:P569 ?dob_value.\n  ?dob_value wikibase:timeValue ?dob.\n  ?dob_value wikibase:timePrecision 11 . # Precision must be date (value 11)\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "fad8c83fd7915ce9886d89e45800f20b4f6d47d855334aa16ef46011119ea8df",
+        "title": "Limit coordinates and link to Wikipedia",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/05",
+        "question": "What are the villages within a 27 km radius from the village of P\u00f3\u0142wsie in Lower Silesian, Poland, including their coordinates?",
+        "sparql": "#Display villages within the specific radius from a specific place\n\nSELECT ?place ?location WITH {\n  SELECT ?place ?location {\n  wd:Q7264829 wdt:P625 ?polvillLoc .\n  SERVICE wikibase:around {\n    ?place wdt:P625 ?location.\n    bd:serviceParam wikibase:center ?polvillLoc;\n      wikibase:radius \"27\".\n  }\n  ?place wdt:P31 wd:Q3558970 .\n }\n } AS %i WHERE {\n  include %i\n}"
+    },
+    {
+        "id": "3369f35b3aea9c1ca22581972fea4665ec46e023582f5511975b11bab7aa6e50",
+        "title": "Write a query for me please",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/03",
+        "question": "What are the items described at a URL containing \"https://www.flickr.com/\" that do not have an associated image?",
+        "sparql": "SELECT ?item ?url\nWHERE \n{\n  ?item wdt:P973 ?url.\n  optional {?item wdt:P18 ?image .}\n  filter(bound(?image)=false)\n  filter(contains(str(?url),\"https://www.flickr.com/\"))      \n}\n"
+    },
+    {
+        "id": "6f0f4f4631eefba66c7acfb34aaf6f853e576368248d27808b4845b141682b45",
+        "title": "Female form of label",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/02",
+        "question": "What are the details of sculptors associated with the Art Nouveau movement? Additionally, provide their gender (if available), occupation (if available), image (if available), place of birth (if available), and date of birth (if available).",
+        "sparql": "SELECT ?item  ?gender ?image ?place ?date ?profession WHERE {\n  ?item wdt:P106 wd:Q1281618;\n    wdt:P135 wd:Q34636.\n  OPTIONAL { ?item wdt:P21 ?gender. }\n  OPTIONAL { ?item wdt:P18 ?image. }\n  OPTIONAL { ?item wdt:P19 ?place. }\n  OPTIONAL { ?item wdt:P569 ?date. }\n  OPTIONAL { ?item wdt:P106 ?profession. }\n}\n"
+    },
+    {
+        "id": "3703ff993994d299e9ea659f338b30555c4747e237f957768e0402b1d1de2c16",
+        "title": "Female German-language science-fiction writers",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/04",
+        "question": "Who are the female science fiction writers and/or those associated with the science fiction genre, who either have German as their native language, speak or write German, are citizens of Germany (including the German Democratic Republic, West Germany, or Nazi Germany), and/or were born in a place located within these regions? For each person, return also their dates of birth and death (both if available), then Order the list alphabetically by name.",
+        "sparql": "SELECT distinct ?person ?personLabel ?dob ?dod WHERE\n{\n  ?person wdt:P31 wd:Q5.           #human\n  ?person wdt:P21 wd:Q6581072.     #female\n#sf-ish\n  {?person wdt:P106 wd:Q18844224}         #sf writer\n  union                                   #and/or\n  {?person wdt:P136/wdt:P279* wd:Q24925.} #genre or subclass thereof=sf\n#German-ish  \n  {?person wdt:P103 wd:Q188 .}            #native lang = German\n  union                                   #and/or \n  {?person wdt:P1412 wd:Q108 .}           #spoken/written lang = German\n  union                                   #and/or\n  {?person wdt:P27 ?Germanish .}          #citizen of (some sort of) Germany\n  union                                   #and/or\n  {?person wdt:P19/wdt:P131* ?Germanish .} #born somewhere within (some sort of) Germany\n  VALUES ?Germanish {wd:Q183 wd:Q16957 wd:Q713750 wd:Q7318}           \n  optional {?person wdt:P569 ?dob}\n  optional {?person wdt:P570 ?dod}\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n} order by ?personLabel\n"
+    },
+    {
+        "id": "d6f9c58f37d72f5fe894b47bd3de70257ceb7ce93a8c02b6e51fbbb7cc3d7f8d",
+        "title": "astronautas",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/10",
+        "question": "What are the details of astronauts, including their name, country of citizenship, astronaut mission, time in space, date of birth, and start of their work period, if available?",
+        "sparql": "SELECT ?item ?nombre ?pa_s_de_nacionalidad ?misi_n_del_astronauta ?premio_recibido ?fecha_de_nacimiento ?inicio_del_periodo_de_actividad WHERE {\n\n ?item wdt:P31 wd:Q5.\n ?item wdt:P106 wd:Q11631.\n OPTIONAL { ?item wdt:P2561 ?nombre. }\n OPTIONAL { ?item wdt:P27 ?pa_s_de_nacionalidad. }\n OPTIONAL { ?item wdt:P450 ?misi_n_del_astronauta. }\n OPTIONAL { ?item wdt:P2873 ?premio_recibido. }\n OPTIONAL { ?item wdt:P569 ?fecha_de_nacimiento. }\n OPTIONAL { ?item wdt:P2031 ?inicio_del_periodo_de_actividad. }\n}\n"
+    },
+    {
+        "id": "e84bc54ddb3f26c1bff8e78183afab46112b41b2ee8c1843c875970d132ff2d7",
+        "title": "List of libraries by region",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/10",
+        "question": "Which libraries are located in the region of Abruzzo?",
+        "sparql": "SELECT ?item with \n{ select ?item where \n  {\n    ?item (wdt:P131/wdt:P131*) wd:Q1284.\n   } \n} as %i where\n{ \n  include %i\n?item (wdt:P31/wdt:P279*) wd:Q7075.\n}\n"
+    },
+    {
+        "id": "96941fcc970f3f3792c0e0b4a8216cf1beca747aabcdbac8174a2c45128c1de8",
+        "title": "Draughtsmen and Engravers called A. Walker or W. Walker",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/04",
+        "question": "Who are the individuals with the family name \"Walker\" whose occupation is either a drawer, engraver, or printmaker, including dates of birth and dates of death (if available)?",
+        "sparql": "SELECT DISTINCT ?item ?date_of_birth ?date_of_death\nWHERE\n{\n  VALUES ?occupation { wd:Q15296811 wd:Q329439 wd: wd:Q11569986 }\n  \n  ?item wdt:P31 wd:Q5 . # ?item is human\n  ?item wdt:P106/wdt:P279* ?occupation . # item's occupation is draughtsman or engraver\n  {\n    ?item wdt:P734 wd:Q1158605 . # item's family name is Walker\n  }\n  OPTIONAL { ?item wdt:P569 ?date_of_birth . }\n  OPTIONAL { ?item wdt:P570 ?date_of_death . }\n}\n"
+    },
+    {
+        "id": "493d9e402f13162563bddaf4a959a3d5fa02fb2312ced845c6960f6d1f361a43",
+        "title": "Get all release dates, platforms, genres, etc. for a video game in one query",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/02",
+        "question": "Select 10 video games ordered by item ID, and list their platform and genre.",
+        "sparql": "SELECT ?item ?platform ?genre with {\n  SELECT ?item WHERE \n  {\n    ?item wdt:P31 wd:Q7889 .\n  } ORDER BY ?item LIMIT 10 } as %i\nWHERE\n{ \n  include %i\n  ?item wdt:P400 ?platform.\n  ?item wdt:P136 ?genre.\n}"
+    },
+    {
+        "id": "05ddec68e818a1a379060084759ce1fc81caa49a49b6c58ac5d4aab39d19bbd8",
+        "title": "Items satisfying one property statement, but not having one qualifier",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/02",
+        "question": "What are the characters that are part of the English alphabet, along with their Unicode characters and Unicode character statements, excluding those that have a Unicode code point qualifier?",
+        "sparql": "# Unicode characters for parts of English Alphabet without Unicode hex codepoint qualifier\nSElECT ?item ?unicode_character ?unicode_character_statement\nWHERE\n{\n  ?item wdt:P361 wd:Q754673 . # ?item is part of English Alphabet\n  ?item p:P487 ?unicode_character_statement .\n  ?unicode_character_statement ps:P487 ?unicode_character .\n  MINUS { ?unicode_character_statement pq:P4213 [] . } # Only results without Unicode hex codepoint qualifier\n}\n"
+    },
+    {
+        "id": "e356658060d83e4692e7267b2277e20a4faac1d3bcaf7a32a576c98407a3ba48",
+        "title": "Directors of the Scuola Normale Superiore",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2017/09",
+        "question": "Who has held the position of Director of the Scuola Normale Superiore? If available, Please provide their years of birth, years of death, start years of the position, end years of the position, and Treccani IDs.",
+        "sparql": "SELECT ?item ?birthyear ?deadyear ?startyear ?endyear ?trec\nWHERE \n{\n  ?item wdt:P39 wd:Q41210386.\n  ?item p:P39 ?position .\n  ?position ps:P39 wd:Q41210386 .\n  OPTIONAL { ?item wdt:P569 ?db. }\n  OPTIONAL { ?item wdt:P570 ?dd. }\n  OPTIONAL { ?position pq:P580 ?st. }\n  OPTIONAL { ?position pq:P582 ?en. }\n  OPTIONAL { ?item wdt:P3365 ?trec. }\n  BIND(str(YEAR(?db)) AS ?birthyear)\n  BIND(str(YEAR(?dd)) AS ?deadyear)\n  BIND(str(YEAR(?st)) AS ?startyear)\n  BIND(str(YEAR(?en)) AS ?endyear)\n}"
+    },
+    {
+        "id": "29e8a97feaa01fde3f77cd3a7016576be25b4b6840f357f3dd462bbf6f4f06c7",
+        "title": "Countries that have never won a medal at the Olympics",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2016/08",
+        "question": "Which countries have never had a citizen or sports representative who participated in an event and received an Olympic medal? Exclude historical countries and countries that were dissolved, abolished, or demolished before 1896.",
+        "sparql": "SELECT ?country WHERE {\n  ?country wdt:P31 wd:Q7275 .\n  MINUS { ?country wdt:P31 wd:Q3024240 } .\n  MINUS {\n    ?country wdt:P576 ?date .\n    FILTER( YEAR(?date) < 1896 ) .\n  } .\n  MINUS {\n    ?person (wdt:P27|wdt:P1532) ?country;\n           p:P1344/pq:P166/wdt:P279* wd:Q636830 .\n  } .\n} "
+    },
+    {
+        "id": "b1f17481c28e52591209b4595343f539f2758f1430b7e24aa39ec717f424d8af",
+        "title": "Search for with subclass depth, first image and return labels in all languages",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2017/02",
+        "question": "Get the items and English item labels that are instances or subclasses of a type of sport, along with a single (maximum-valued) image, if available.",
+        "sparql": "SELECT ?item ?image ?label WITH {\n  SELECT ?item (MAX(?p18) AS ?image) {\n    ?item wdt:P31/wdt:P279* wd:Q31629 .\n    OPTIONAL { ?item wdt:P18 ?p18 } .\n  } GROUP BY ?item\n} AS %subquery WHERE {\n  INCLUDE %subquery .\n  ?item rdfs:label ?label .\n  FILTER ( LANG( ?label ) = \"en\" ) .\n} "
+    },
+    {
+        "id": "e9e2d74a71d30759826b34566ef63b7bd3bae6624cb2faf1c7fd3d8ed9668176",
+        "title": "Addition that work in PetScan",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2023/02",
+        "question": "What are the items that are instances of structures such as buildings, hospitals, theatre buildings, sculptures, restaurants, commemorative plaques, metro stations, gardens, houses, main libraries, private educational institutions in Catalonia, hotels, church buildings, historic buildings, EADA Business School, movie theaters, Catalonia schools, Catalonia Institutes, bookstores, Catholic church buildings, libraries, fountains, or art galleries, and are located within a combined distance of less than 2.54 units from both the coordinates of Espina del mar and Port. Inauguraci\u00f3 bocana nord?",
+        "sparql": "SELECT ?item WHERE {\n  VALUES ?inst {wd:Q41176 wd:Q16917 wd:Q24354 wd:Q860861 wd:Q11707 wd:Q721747 wd:Q928830 wd:Q1107656 \n                          wd:Q3947 wd:Q12317349 wd:Q111594067 wd:Q27686 wd:Q16970 wd:Q35112127 \n                          wd:Q1273818 wd:Q41253 wd:Q111236457 wd:Q50359544 wd:Q200764 wd:Q1088552 \n                          wd:Q7075 wd:Q483453 wd:Q1007870}.\n  ?item wdt:P31 ?inst.\n  ?item wdt:P625 ?coord.\n  wd:Q99509385 wdt:P625 ?focus1.\n  wd:Q113663833 wdt:P625 ?focus2.\n  BIND (geof:distance(?coord, ?focus1)+geof:distance(?coord, ?focus2) as ?d).\n  FILTER(?d < 2.54).\n}\n"
+    },
+    {
+        "id": "f0b60d7a04b032388e4d93660cdb141d1edcc9146ecf7ad4e4167d1f156b2a87",
+        "title": "population chart",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2017/11",
+        "question": "What are the population, male population, and female population of Sankt Andreasberg at different points in time, ordered by date?",
+        "sparql": "#defaultView:LineChart\n\nSELECT ?point_in_time ?population ?malePopulation ?femalePopulation WHERE {\n  {\n    wd:Q661700 p:P1082 _:wp.\n    _:wp ps:P1082 ?population.\n    _:wp pq:P585 ?point_in_time.\n    BIND(YEAR(?point_in_time) AS ?Jahr)\n    SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],de\". }\n  }\n  UNION\n  {\n    wd:Q661700 p:P1540 _:mp.\n    _:mp ps:P1540 ?malePopulation.\n    _:mp pq:P585 ?point_in_time.\n  }\n  UNION\n  {\n    wd:Q661700 p:P1539 _:fp.\n    _:fp ps:P1539 ?femalePopulation.\n    _:fp pq:P585 ?point_in_time.\n  }\n}\nORDER BY ?point_in_time\n"
+    },
+    {
+        "id": "d6c28fd28e8f4ece9e8a5f15bfe84303b578e5d9da3d21693276ee11442b4002",
+        "title": "Persons who dont have a picture",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2023/05",
+        "question": "Who are the members of the historic Lower House and Upper House of the Parliament of Sweden, whose party's Sweedish label contain the string \"vilde\" in their party name? For each person, also return the associated party, and the start (if available) and end (if available) times of the party.",
+        "sparql": "SELECT distinct ?wd ?party ?startvilde ?endvilde WHERE\n  { \n    SERVICE <https://query.wikidata.org/sparql> \n    {\n      VALUES ?position { wd:Q81531912 wd:Q33071890 }\n      ?wd wdt:P31 wd:Q5;\n          wdt:P39 ?position.\n      ?wd rdfs:label ?name. FILTER(lang(?name)=\"sv\")\n      {\n       ?wd p:P102 ?PartyWD. \n       ?PartyWD ps:P102 ?p\n       OPTIONAL {?PartyWD pq:P580 ?startvilde}\n       OPTIONAL {?PartyWD pq:P582 ?endvilde}\n       ?p rdfs:label ?party.\n       FILTER(LANG(?party) =\"sv\").\n       FILTER(CONTAINS(?party, 'vilde'))\n        SERVICE wikibase:label { bd:serviceParam wikibase:language \"sv,en\". }\n       #FILTER (?wd = wd:Q5555629)\n      }\n    }\n  }\n"
+    },
+    {
+        "id": "87514dd90ec4d394a9cc19966764c47a006e25e74fae20ebed8287f1bb541b46",
+        "title": "Chess olympiad participantes",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/09",
+        "question": "Who are the chess players with an OlimpBase Chess Olympiad player ID who somehow have not participated in any Chess Olympiad event?",
+        "sparql": "SELECT DISTINCT ?item ?itemLabel\nWHERE\n{\n  ?item wdt:P3940 ?value .\n  MINUS { ?item wdt:P1344 ?olymp .\n  ?olymp wdt:P31 wd:Q428303 .\n         }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"de,en\" } .\n}\nLIMIT 1000\n"
+    },
+    {
+        "id": "cc92b0c2aff5f48f8a40e147b742b6a7b04bb02a17cd76b885fb28c44f4b2123",
+        "title": "Rest of division",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/04",
+        "question": "What are the items with numerical values greater than 10,000,000 that are instances of large numbers in Wikidata, along with their numerical values?",
+        "sparql": "SELECT ?item ?valeur ?itemLabel WHERE {\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n  ?item wdt:P1181 ?valeur.\n  FILTER(?valeur > 10000000)\n  ?item wdt:P31 wd:Q1816844.\n} group by ?item ?valeur ?itemLabel "
+    },
+    {
+        "id": "cca35331605fcaa99f07e066f70091099c231f7adacf6ed4a9742c9cd610802b",
+        "title": "List of Oscar Best Movies",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/03",
+        "question": "Which films have received the Academy Award for Best Director after 2010? Please also include the year they received the award and their IMDb ID if available.",
+        "sparql": "SELECT DISTINCT ?item ?itemLabel (YEAR(?time) as ?year) ?IMDb_ID\nWHERE {\n  ?item wdt:P31 wd:Q11424;\n    p:P166 ?oscar_statement.\n  ?oscar_statement ps:P166 wd:Q103360;\n    pq:P585 | (pq:P805/wdt:P585) ?time.\n  OPTIONAL { ?item wdt:P345 ?IMDb_ID. }\n\n  # Use only truthy statements - not really needed here, but for good measure\n  ?oscar_statement wikibase:rank ?rank.\n  FILTER (?rank = wikibase:PreferredRank ||\n          (?rank = wikibase:NormalRank && NOT EXISTS { ?item p:P166/wikibase:rank wikibase:PreferredRank. } )\n         )\n  \n  # Add condition for year\n  FILTER (YEAR(?time) > 2010)\n\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". }\n}\n"
+    },
+    {
+        "id": "d2c50e9b837d856607b51a099b09b9e67bf340eaebfadd40f110516691829168",
+        "title": "Optimization: query to get all french communes with some datas",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/02",
+        "question": "What are the communes of France with postal codes ranging from 85001 to 85999 (both inclusive)? For each commune, include the postal code, its images (if available) and official websites (if available).",
+        "sparql": "PREFIX schema: <http://schema.org/>\nSELECT ?commune ?communeLabel ?communeImage ?communePostalCode ?communeWebsite\n    \n    WITH {\n      SELECT ?commune ?communePostalCode WHERE {\n        ?commune wdt:P31 wd:Q484170;\n                 p:P625 ?coordinate.\n        ?coordinate psv:P625 ?coordinate_node.\n        ?commune wdt:P281 ?communePostalCode\n        FILTER (?communePostalCode > \"85000\" && ?communePostalCode < \"86000\")\n      }\n      GROUP BY ?commune ?communePostalCode\n    } AS %results \n    \n    WHERE {\n      INCLUDE %results.\n      OPTIONAL { ?commune wdt:P18 ?communeImage }.\n      OPTIONAL { ?commune wdt:P856 ?communeWebsite }.\n\n      SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n    }\n\nORDER BY ?communePostalCode"
+    },
+    {
+        "id": "17688c6a21a95c1b953a16cae0d71d0b7d2bfcfc883d13f177b3bcf9e185cef8",
+        "title": "Show Photo Attribution",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/08",
+        "question": "What are the planets beyond the Solar System in Wikidata with at least one associated image? Return the planet and the associated image(s).",
+        "sparql": "#defaultView:ImageGrid\nSELECT ?exoplanet ?exoplanetLabel ?image WHERE {\n  ?exoplanet wdt:P31 wd:Q44559 ;\n             wdt:P18 ?image .\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}"
+    },
+    {
+        "id": "ec5ea2fd0d137a504dc29ff8562d958a8f70a7247d5159f5ab3f1cc190511a69",
+        "title": "Query failing",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/02",
+        "question": "What are the departments in France and their INSEE department codes? Additionally, provide the following statistics about church buildings located within each department: the total count of church buildings, the count of church buildings without coordinates, the count of church buildings without images, the percentage of church buildings with coordinates, and the percentage of church buildings with images. Order results from lower to higher INSEE codes.",
+        "sparql": "SELECT ?item ?INSEE ?itemLabel ?depCount (IF(?_withCoord > ?depCount, 0, ?depCount - ?_withCoord) AS ?withoutCoord) (IF(?_withImg > ?depCount, 0, ?depCount - ?_withImg) AS ?withoutImg) (ROUND((IF(?_withCoord > ?depCount, ?depCount, ?_withCoord) / ?depCount) * 100 * 100) / 100 AS ?withCoord) (ROUND((IF(?_withImg > ?depCount, ?depCount, ?_withImg) / ?depCount) * 100 * 100) / 100 AS ?withImg)\nWHERE {\n  {\n    SELECT ?item (COUNT(DISTINCT ?item2) AS ?depCount) (COUNT(DISTINCT ?coord) AS ?_withCoord) (COUNT(DISTINCT ?img) AS ?_withImg) WHERE {\n      ?commune wdt:P31/wdt:P279* wd:Q484170 .\n      ?item2 wdt:P31/wdt:P279* wd:Q16970.\n      hint:Prior hint:gearing \"forward\".\n      ?item2 wdt:P131 ?commune.\n      ?commune wdt:P131 ?item .\n      ?item wdt:P2586 ?INSEE .\n      \n      OPTIONAL { ?item2 wdt:P625 ?coord } .\n      OPTIONAL { ?item2 wdt:P18 ?img } .\n    } GROUP BY ?item\n  } .\n  ?item wdt:P2586 ?INSEE .\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"fr\" } .\n}\nORDER BY ?INSEE\n"
+    },
+    {
+        "id": "07d5344a450e1e8e3d850177fd6a270f7f8071eaaa58ce0d280b2e396783b74a",
+        "title": "Specific url in a specific property",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2016/12",
+        "question": "What are the items described at a URL starting with \"https://www.redib.org/recursos/Serials/Record/oai_revista\" (disregarding the `<` character) along with their titles (if available) and ISSNs (if available)?",
+        "sparql": "SELECT ?item ?title ?issn ?url WHERE {\n  ?item wdt:P973 ?url .\n  FILTER (SUBSTR(STR(?url), 1, 57) = \"https://www.redib.org/recursos/Serials/Record/oai_revista\") .\n  OPTIONAL { ?item wdt:P1476 ?title . }\n  OPTIONAL { ?item wdt:P236 ?issn . }\n}\n"
+    },
+    {
+        "id": "034c5ba4086e08902992cad421bfb0d7d7dc1839f273730e349868e5ada13ff4",
+        "title": "Acting tennis players by ranking",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/10",
+        "question": "Who are the female tennis players that were either born in Belarus and/or represent Belarus in sports and are still considered to be players (i.e. do not have a recorded end date of profession)? In addition, for each player, if rating information is available, include their most recent rating and when that rating started to take effect.",
+        "sparql": "# Belarusian tennis players\nSELECT DISTINCT ?item ?itemLabel ?rating ?when\nWHERE {\n  BIND(wd:Q10833314 AS ?tennisPlayer)                                # replace with any other profession\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],be-tarask,uk,pl,en\". }   # output label formatting\n\n  ?item wdt:P31 wd:Q5.                                               # only humans\n  ?item wdt:P21 wd:Q6581072.                                         # women\n  { ?item wdt:P19 wd:Q184. }                                         # place of birth - Belarus\n  UNION\n  { ?item wdt:P19/wdt:P131* wd:Q184. }                               # or place of birth is in Belarus\n  UNION\n  { ?item wdt:P1532 wd:Q184. }                                       # or sports citizenship of Belarus\n  ?item p:P106 ?profession.                                          # have a profession\n  ?profession ps:P106 ?tennisPlayer.                                 # \u2026tennis players\n  FILTER NOT EXISTS { ?profession pq:P582 ?x }                       # \u2026without an end date\n  OPTIONAL { ?item p:P1352 ?singleRanking.                           # sports ranking\n             ?singleRanking ps:P1352 ?rating.\n             ?singleRanking pq:P641 wd:Q18123880. \n             ?singleRanking pq:P585 ?when . }                        # single\n  filter not exists { ?item p:P1352 ?singleRanking2.                 # sports ranking\n             ?singleRanking2 ps:P1352 ?rating2.\n             ?singleRanking2 pq:P641 wd:Q18123880.\n             ?singleRanking2 pq:P585 ?when2 .\n             filter (str(?singleRanking) != str(?singleRanking2))\n             filter (?when2>?when)   }        \n}\n# LIMIT 100\n"
+    },
+    {
+        "id": "ca1cf9373404e3260f8f1a9c95104f6de08b3eb839c0a07832943c53cfc047a9",
+        "title": "specific colors",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/10",
+        "question": "For each parliamentary terms of the House of Commons of Canada, how many members belong to each party? Count only those member with a recorded electoral district for that term.",
+        "sparql": "\nselect distinct ?l\u00e9gislatureLabel (count (distinct ?item) as ?count) ?groupeLabel where {\nSERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". } \n?item p:P39 ?fonction ; \n      wdt:P39 wd:Q15964890 .\n?fonction ps:P39 wd:Q15964890 ;\n          pq:P4100 ?groupe ; \n          pq:P2937 ?l\u00e9gislature ; \n          pq:P768 ?circonscription . \n}\ngroup by ?l\u00e9gislatureLabel ?groupeLabel ?count ?rgb\norder by desc (?l\u00e9gislatureLabel)\n"
+    },
+    {
+        "id": "0bc83e14120a6adf24ad22f10359b20fa3a81a6d31d1ac1422dd167052e80090",
+        "title": "`number of seats (P1342)` (members in lower and upper houses)",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/01",
+        "question": "For each member state of the UN, what are the number of seats in each of its legislative bodies? Do not count those that are considered to be particular legislative terms (e.g. \"42nd Canadian Parliament\"), or those that already are recorded as \"bicameral\" in nature (e.g., for the United States, you should return both US Senate and US House of Representatives, but not \"US Congress\").",
+        "sparql": "SELECT ?item ?itemLabel ?appliestoLabel ?seats\nWHERE \n{\n  ?item wdt:P1342 ?seats.\n  ?item wdt:P1001 ?appliesto.\n  ?appliesto wdt:P463 wd:Q1065.\n  minus {?item wdt:P31/wdt:P279* wd:Q15238777 .}\n  minus {?item wdt:P31 wd:Q189445 .}\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n} order by ?appliestoLabel\n"
+    },
+    {
+        "id": "92186df73074ceb2885fc51129d8ce26e88bccde9ab200cc1666ffa1bc7d9c24",
+        "title": "Query for all instruments played by people affiliated with a particular organization, and the number of those people who play each instrument",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/09",
+        "question": "What are the musical instruments played by people who are affiliated with the University of Washington School of Music and have been educated at the University of Washington, and how many people play each instrument?",
+        "sparql": "SELECT ?instrument ?instrumentLabel (COUNT(?student) AS ?count)\nWHERE {\n  ?student wdt:P1303 ?instrument; \n           wdt:P1416 wd:Q98035717;\n           wdt:P69 wd:Q219563.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\" }\n  } GROUP BY ?instrument ?instrumentLabel\n"
+    },
+    {
+        "id": "952c755fa8d032b863ae0f03281a8ce454e109b73a9cc8532ca7f1fe79387524",
+        "title": "Municipalties of Czech Republic",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/02",
+        "question": "Which individuals are citizens of Dominican Republic but were not born in Dominican Republic?",
+        "sparql": "SELECT DISTINCT ?item WHERE {\n  ?item wdt:P27 wd:Q786.\n  FILTER(NOT EXISTS {\n    ?item wdt:P19 ?place.\n    ?place (wdt:P131*) wd:Q786.\n    hint:Prior hint:gearing \"forward\".\n  })\n}"
+    },
+    {
+        "id": "cb05e7ca0be15d708689ca7b243286db244c41d117cb92def341dd86a9b8faab",
+        "title": "Need to select all the coutries in the world, and their GPD",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/04",
+        "question": "What are the countries in the world, along with their population, Human Development Index (HDI), life expectancy, continent, and nominal GDP, ordered by descending HDI?",
+        "sparql": "SELECT ?item ?population ?hdi ?lifeExpectancy ?continentLabel ?GDP WHERE {\n ?item wdt:P31 wd:Q6256 .\n ?item wdt:P1082 ?population .\n ?item wdt:P1081 ?hdi .\n ?item wdt:P30 ?continent .\n ?item wdt:P2250 ?lifeExpectancy .\n ?item wdt:P8744/wdt:P2131 ?GDP .\n } ORDER BY DESC(?hdi)\n"
+    },
+    {
+        "id": "eda2d92b495b81bc4efc82d12819cac9b43003e4af91285890ded59a7ec31132",
+        "title": "including `point in time (P585)`",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/12",
+        "question": "Who are the recipients of the Wollaston Medal, and in which year did they receive it, if available? Please list them in order of the date they received the award.",
+        "sparql": "SELECT ?recipient ?recipientLabel (YEAR(?time) AS ?year)\nWHERE\n{\n  ?recipient p:P166 ?statement .\n  ?statement ps:P166 wd:Q832424 . # Wollaston Medal\n  OPTIONAL { ?statement pq:P585 ?time . }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\" . }\n}\nORDER BY ?time\n"
+    },
+    {
+        "id": "9d97c67d94263e31eae09da45237b1380bc3b6491790a86ef1978a2076107a16",
+        "title": "how to select P properties beneath a Q item",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/02",
+        "question": "What are the names, dates of birth (if available), dates of death (if available), positions held (if available), start times of those positions (if available), and end times of those positions (if available) of individuals who are citizens of Spain, were born in Madrid, and are politicians, statespersons, monarchs, or sovereigns?",
+        "sparql": "SELECT ?item ?dateofbirth ?dateofdeath ?position ?starttime ?endtime\nWHERE\n{\n  ?item wdt:P31 wd:Q5; # human\n        wdt:P27 wd:Q29; # citizenship - Spain\n        wdt:P19 wd:Q2807 # born in Madrid\n  VALUES ?occupation { wd:Q82955 wd:Q372436 wd:Q116 wd:Q2304859 } # politician, statesperson, monarch, sovereign\n  ?item wdt:P106 ?occupation.\n  OPTIONAL { ?item wdt:P570 ?dateofdeath . } # date of death\n  OPTIONAL { ?item wdt:P569 ?dateofbirth . } # date pf birth\n  OPTIONAL { ?item p:P39 ?p .\n             ?p ps:P39 ?position.\n             OPTIONAL { ?p pq:P580 ?starttime. }\n             OPTIONAL { ?p pq:P582 ?endtime. }\n           } # position held\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"es\". }\n}\n"
+    },
+    {
+        "id": "10dc4309cb0e21cdb7be742122432adfd04e8eadefcb58f5a561a7225d2f141f",
+        "title": "Adapting a query",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/07",
+        "question": "Which pairs of different commercial airports share the same IATA code? Exclude military airports, railway stations, Royal Air Force stations, and airports that have been dissolved, abolished, or demolished. For each pair, return the shared IATA code and the two airports. ",
+        "sparql": "SELECT DISTINCT ?code ?item1 ?item2 WHERE {\n  ?item1 wdt:P31/wdt:P279* wd:Q1248784. \n#  ?item1 wdt:P238 ?code .        #oddly, we don't need this - see a couple of rows below\n  ?item1 p:P238 ?statement1.        #we replace the ?item1 wdt:P238 ?code . bit by getting the P238 property statement\n  ?statement1 ps:P238 ?code.          #get the IATA code assicated with the property statement\n  minus { ?statement1 pq:P582 [].} #minus any end dated codes\n#  ?item2 wdt:P238 ?code .         #Second with code IATA\n  ?item2 p:P238 ?statement2.        #we replace the ?item2 wdt:P238 ?code . bit by getting the P238 property statement\n  ?statement2 ps:P238 ?code.          #get the IATA code assicated with the property statement\n  minus { ?statement2 pq:P582 [].} #minus any end dated codes\n  FILTER ( ?item1 != ?item2 )     #Only diff\u00e9rents elements\n  minus {?item1 wdt:P31/wdt:P279* wd:Q695850.}      # exclude military airports\n  minus {?item1 wdt:P31/wdt:P279* wd:Q1311670.}     # exclude railways stations\n  minus {?item1 wdt:P31/wdt:P279* wd:Q7373622.}     # exclude Royal Air Force\n  minus {?item2 wdt:P31/wdt:P279* wd:Q695850.}      # exclude military airports\n  minus {?item2 wdt:P31/wdt:P279* wd:Q1311670.}     # exclude railways stations\n  minus {?item2 wdt:P31/wdt:P279* wd:Q7373622.}     # exclude Royal Air Force\n  minus {?item1 wdt:P576 ?date}                     # exclude destructed airports\n  minus {?item2 wdt:P576 ?date}                     # exclude destructed airports\n  SERVICE wikibase:label { bd:serviceParam wikibase:language  \"fr,en\". } #r\u00e9cup\u00e9rer le libell\u00e9 en fran\u00e7ais si possible sinon en anglais\n  }\nORDER BY ?code #trier les r\u00e9sultats selon le code AITA\n"
+    },
+    {
+        "id": "04de0d6063e846a05dcf318683e29a0e4fd14f9b2f42814e52ec4069a507efad",
+        "title": "Number of values of a property of each instance",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2017/03",
+        "question": "How many distinct official websites does each programming language have, ordered by the count in descending order? Each tuple in result should contains the language and its number of official websites.",
+        "sparql": "SELECT ?lang (COUNT(DISTINCT ?website) as ?count)\nWHERE {\n  ?lang wdt:P31/wdt:P279* wd:Q9143.\n  ?lang p:P856 ?website.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\" }\n}\nGROUP BY ?lang ?langLabel\nORDER BY DESC(?count)\n"
+    },
+    {
+        "id": "17335fc934aad8dcad7b57bb074f85b9affd237cd8313382c230800add8ef103",
+        "title": "L'ensemble des archives en Suisse",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/10",
+        "question": "What are the archive agencies and instutions located in Switzerland? For each one, also include the cantons they are located in (if available), their ISIL identifiers (if available), and their GLAM IDs (if available).",
+        "sparql": "#Recherche dans Wikidata les \u00e9l\u00e9ments qui sont des archives (ou l'une de ses sous-classes) et qui ont pour pays la Suisse.\n  SELECT distinct ?item ?canton ?ISIL ?GLAM\n  WHERE \n  {\n     ?item wdt:P31/wdt:P279* wd:Q166118 .\n     ?item wdt:P17 wd:Q39 .\n    OPTIONAL  { ?item wdt:P791 ?ISIL }\n    OPTIONAL {  ?item wdt:P3066 ?GLAM }\n    OPTIONAL {  ?item wdt:P131* ?canton . ?canton wdt:P31 wd:Q23058  }\n  }\n"
+    },
+    {
+        "id": "527fd9c35870110c2ca20b8361a9dbc4cb885aae6a8c93d3b8ff5214694179c1",
+        "title": "Identifier with 11 digits",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/08",
+        "question": "What are the items with INE municipality codes that are exactly 9 digits long, and what are their corresponding codes?",
+        "sparql": "SELECT ?item ?id WHERE {\n  ?item wdt:P772 ?id .\n  FILTER(STRLEN(?id) = 9) .\n}\n"
+    },
+    {
+        "id": "1c4f8cbe51b6b836d572cb8fcff480918877925c2262892dae098824218ad752",
+        "title": "Getting property label",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/07",
+        "question": "Who participated in the 2018 Tour de France (the bicycle race), their current sports teams, and the year they started with their current team?",
+        "sparql": "SELECT ?person ?team (year(?st) as ?since)  WHERE {\n  ?person wdt:P1344 wd:Q28859163.\n  ?person p:P54 ?teamStatement .\n  ?teamStatement ps:P54 ?team .\n  optional {?teamStatement pq:P580 ?st}\n  optional {?teamStatement pq:P582 ?et}\n  filter(bound(?st) && !bound(?et))\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n} order by desc(?since)\n"
+    },
+    {
+        "id": "d2cc23ab66bb40e4bc53f7aedd5dffde8ccda5cff973e6776078296a0f6c7ad7",
+        "title": "Persons from a certain time period and country",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/09",
+        "question": "Who are the Japanese citizens who born in the 15th and 16th centuries and what are their birthdates?",
+        "sparql": "SELECT ?person ?personLabel ?date_of_birth\nWHERE\n{\n  ?person wdt:P31 wd:Q5 . # ?person is human\n  ?person wdt:P27 wd:Q17 . # ?person is Japanese\n  ?person wdt:P569 ?date_of_birth .\n  FILTER(\"1400-00-00\"^^xsd:dateTime <= ?date_of_birth &&\n         ?date_of_birth < \"1600-00-00\"^^xsd:dateTime)\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\" . }\n}\n"
+    },
+    {
+        "id": "6980b28e1d1d5c58e48ec1bb7cd91d80c215aec4f8bda1826dec5d5e892c0c6a",
+        "title": "`ESRB rating (P852)`",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/07",
+        "question": "What are the games, that have a North American video game content rating and were released on or before December 31, 1998? For each tuple, return the game, its ESRB rating, and the release date. One game can have multiple release dates, in which case they should appear in different rows.",
+        "sparql": "SELECT ?item ?ESRB_rating?released\nWHERE\n{\n  ?item p:P852 / ps:P852 ?ESRB_rating.\n  ?item wdt:P31 / wdt:P279 * wd:Q11410. # Instance of game\n  ?item wdt:P577 ?released.\n  FILTER (?released <= \"1998-12-31T00:00:00Z\"^^xsd:dateTime)\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "2051bd76f2698af035fd2298851c6d23e1f01ee1defacb2613245d874b82aa79",
+        "title": "Count that groups subclasses of certain items",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2016/09",
+        "question": "For each GUI toolkit or framework, how many items in Wikidata are using it? Include only those with some items using it (disregard those not being used by any item). Also, make sure that items using the framework in a different language is aslo counted towards the original one (e.g. the ones using PyGTK is also counted towards GTK).",
+        "sparql": "SELECT ?toolkit ?toolkitLabel ?count WHERE\n{\n  {\n    SELECT ?toolkit (count(?item) as ?count) WHERE {\n      ?item wdt:P1414/wdt:P1372* ?toolkit .\n    }\n    GROUP BY ?toolkit\n    }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\". }\n}\nORDER BY DESC(?count)\n\n"
+    },
+    {
+        "id": "8e55bc25512c474e8728427cfd84c7838869a8ce96c1f5a71cfb750203650f3e",
+        "title": "Is there a way to get list of typical file extensions of source code files?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/06",
+        "question": "What are the programming languaes and those considered to be file formats which are programmed in a language? For each one, also include its file extension format (e.g. txt).",
+        "sparql": "SELECT distinct ?item ?ext\nwhere {\n   { ?item wdt:P31 wd:Q235557.         # Instance of file format\n    ?item wdt:P277 ?lang. }            # must be a programming language\n  UNION                                # and/or\n   { ?item wdt:P31/wdt:P279* wd:Q9143 .       # Instance of programming language\n     }    # in English \n  ?item wdt:P1195 ?ext                 # must have a file extension\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\" } # get Labels\n} order by ?langLabel ?ext\n"
+    },
+    {
+        "id": "205576e826ea45a92c4ec4b0c9a065f57284342bf78ebeb017d274a0e4362d71",
+        "title": "Dam within 1km of another dam",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/08",
+        "question": "What are the dams in Japan along with their coordinates, that are within 1.00001 kilometers of another dam? Include the nearby dam and its coordinate, and the distance between them. Each pair should only appear once.",
+        "sparql": "SELECT ?item ?coord ?place ?location ?dist\nWHERE \n{\n  ?item wdt:P31/wdt:P279* wd:Q12323. \n  ?item wdt:P625 ?coord. \n  ?item wdt:P17 wd:Q17\n  \n  SERVICE wikibase:around { \n      ?place wdt:P625 ?location . \n      bd:serviceParam wikibase:center ?coord . \n      bd:serviceParam wikibase:radius \"1.00001\" . \n      bd:serviceParam wikibase:distance ?dist.\n  } \n  ?place wdt:P31/wdt:P279* wd:Q12323. \n  filter(str(?item) < str(?place))\n  \n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". } \n}\nORDER BY ?dist"
+    },
+    {
+        "id": "8324b6405d158375611b086c6bce4b81d70dabc50a7d2f6c60fc60ca2b505607",
+        "title": "Percentage of out of school children (`number of out-of-school children (P2573)`) in population of a country",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/11",
+        "question": "What are the countries and the percentage of out-of-school children in their population, rounded to two decimal places (e.g. literals such as '7.86')?",
+        "sparql": "SELECT ?country ?OOS {\n  ?country wdt:P31 wd:Q6256;\n           wdt:P1082 ?pop;\n           wdt:P2573 ?outOfSchool.\n  BIND(ROUND( (?outOfSchool/?pop*100) *100)/100 AS ?OOS). # *100)/100 is workaruound for two places after comma, `round` doesn't do that (?)\n#   BIND((?outOfSchool/?pop*100) AS ?OOS). # no rounding \n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE], en\". }\n}\n"
+    },
+    {
+        "id": "2c1cfba71661938d9a7861cdaae5693dcd08d3771f4e1c2fc2a2bc566e1a75d5",
+        "title": "Resumption of: https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/04#list_of_Nazi_camps",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2022/03",
+        "question": "What are the Nazi concentration camps or subcamps? Include the following way of finding such a camp: (1) those that are classified as a Nazi concentration camp, (2) those that are considered the subcamps, and (3) subsdiaries of Nazi concentration camps. For each one, also find its coordinates (e.g. literals such as `Point(9.1978 49.1686)'`). Each pair of camp and coordinate should only appear once.",
+        "sparql": "SELECT DISTINCT ?camp ?coord \nWHERE \n{\n  {\n    ?camp wdt:P31 ?instance_of.\n    ?instance_of wdt:P279* wd:Q328468. # Nazi concentration camp\n  }\n  UNION\n  {\n    ?camp wdt:P31 ?instance_of.\n    ?instance_of wdt:P279* wd:Q1719244. # Subcamp\n  }\n  UNION\n  {\n    ?mother_camp wdt:P31 ?mc_instance_of.\n    ?mc_instance_of wdt:P279* wd:Q328468. # Nazi concentration camp\n    ?mother_camp wdt:P355 ?camp. # camp is a subsidiary of mother_camp \n    ?camp wdt:P31 ?instance_of.\n  }\n  OPTIONAL {?camp p:P625 ?stat . \n           ?stat ps:P625 ?coord . \n           }\n\n}"
+    },
+    {
+        "id": "c0f4641f68b137f5d2c94ac9a299eb989dceb1e9615db4156c1ccd78b6c6c285",
+        "title": "Data quality : `inception (P571)` and `dissolved, abolished or demolished date (P576)`",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/11",
+        "question": "What are the items located in the United Kingdom that have an inception date but do not have an \"instance of\" statement?",
+        "sparql": "SELECT ?item ?itemLabel \nWHERE \n{\n  ?item wdt:P17 wd:Q145 . \n  ?item wdt:P571 ?P571.\n  filter not exists {?item wdt:P31 [] . }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "3ebe3c801eee0758e8eaf1d532e9697d4bd6c01752d0a75d56360750f1f9c100",
+        "title": "Extraction d'un qualificatif li\u00e9 \u00e0 une propri\u00e9t\u00e9",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/04",
+        "question": "Who are the members of the Acad\u00e9mie des sciences, belles-lettres et arts de Lyon, including their names, dates of birth (if available), dates of death (if available), start dates of their membership (if available), and end dates of their membership (if available)?",
+        "sparql": "#Membres Acad\u00e9mie des sciences Lyon\nSELECT ?item ?date_de_naissance ?date_de_mort ?date_de_debut ?date_de_fin\nWHERE \n{\n#  wdt:\"Membre-de\" wd:\"Acad\u00e9mie-sciences...\"\n  ?st ps:P463 wd:Q730513 .\n  ?item p:P463 ?st .\n  \n  OPTIONAL { ?item wdt:P569 ?date_de_naissance. }\n  OPTIONAL { ?item wdt:P570 ?date_de_mort. }\n  #qualificatif date_de_debut de la propriete \"membre de / Acad\u00e9mie-sciences...\"\n  OPTIONAL { ?st pq:P580 ?date_de_debut. }\n  # qualificatif date_de_fin de la propriete \"membre de / Acad\u00e9mie-sciences...\"\n  OPTIONAL { ?st pq:P582 ?date_de_fin. }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "5d599e4fd7a4e4372d360b004f174809c3a1fc74b633fb983f7ea50371bceba1",
+        "title": "Russian districts",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/02",
+        "question": "What are the current municipal formations (and its subclasses) in Russia within \"Kamchatka Krai\"?",
+        "sparql": "SELECT ?id\nWHERE {\n  ?_ wdt:P131* wd:Q7948 .\n  ?locst ps:P131 ?_ .\n  ?id p:P131 ?locst  . \n  ?__ wdt:P279* wd:Q1849719 .\n  ?id p:P31/ps:P31 ?__ .\n  MINUS { ?locst pq:P582 [] }\n\n} GROUP BY ?id"
+    },
+    {
+        "id": "1ebecc42e5f61dd59dde58a9db5861db2c00f37139899dbfccbb5e52247b8f6a",
+        "title": "Tracks",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2024/01",
+        "question": "What are the albums, their Bandcamp release IDs, and their tracks? Additionally, if available, provide the ISRC, MusicBrainz recording ID, Genius ID, and LyricsTranslate ID for each track. The results should be ordered by album label and track label.",
+        "sparql": "SELECT ?album ?bc ?track ?trackLabel ?ISRC ?MB ?G ?LT\nWHERE \n{\n  ?album wdt:P31/wdt:P279* wd:Q482994.\n  ?album wdt:P11354 ?bc.\n  ?album wdt:P658 ?track .\n  \n  OPTIONAL {?track wdt:P1243 ?ISRC .}\n  OPTIONAL {?track wdt:P4404 ?MB .}\n  OPTIONAL {?track wdt:P6218 ?G .}\n  OPTIONAL {?track wdt:P7212 ?LT .}\n\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }                    \n\n} order by ?albumLabel ?trackLabel\n"
+    },
+    {
+        "id": "80cf979695ac7926d0a2543f9d6ddda9d2e7b12d131d6d989f57803dd87cf53f",
+        "title": "How can future inception (`inception (P571)`) dates be excluded?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2023/12",
+        "question": "What are the municipalities of Belgium that have not been dissolved, abolished, or demolished, and do not have an inception date in the future?",
+        "sparql": "SELECT DISTINCT ?item ?itemLabel\nWHERE {\n  ?item wdt:P31 wd:Q493522 .\n  MINUS { ?item wdt:P576 [] }\n  MINUS { ?item wdt:P571 ?date .\n    FILTER (DATATYPE(?date) = xsd:dateTime && ?date > now())\n  }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"nl,fr,de,en\". }\n}\nORDER BY ?itemLabel\n"
+    },
+    {
+        "id": "1abbb6b69c835edde070bcbf0ab44af14de9e16b22c070b680613db0c530dfb0",
+        "title": "Optimizing a query for the mapframe extension",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/02",
+        "question": "What are the current municipal districts, urban districts in Russia, or administrative districts of Moscow located within Perm Krai?",
+        "sparql": "SELECT DISTINCT ?id\nWHERE {\n  { ?id p:P31/ps:P31/wdt:P279* wd:Q2198484 .\n}\n  UNION\n  { ?id p:P31/ps:P31/wdt:P279* wd:Q13626398 . \n}  \n  UNION\n  { ?id p:P31/ps:P31/wdt:P279* wd:Q4057820 . \n}  \n  ?id p:P131 ?locst .\n  ?locst ps:P131/wdt:P131* wd:Q5400.\n  MINUS { ?locst pq:P582 [] }\n\n  OPTIONAL {?link schema:about ?id .\n  ?link schema:isPartOf <https://en.wikipedia.org/> . }\n} \nGROUP BY ?id ?link ?idLabel\n"
+    },
+    {
+        "id": "df3d023a806ca158600beacaae8d01153bc83d36764e2758c67e34bde37478df",
+        "title": "Where do I do wrong things?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/08",
+        "question": "What are the authors who are citizens of Norway, along with their dates of birth (if available) and works (if available)?",
+        "sparql": "SELECT ?author ?dob ?work\nWHERE\n{\n  ?author wdt:P27 wd:Q20.\n  ?author wdt:P106 wd:Q482980.\n  OPTIONAL { ?author wdt:P569 ?dob }\n  OPTIONAL { ?author ^ wdt:P50 ?work }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}"
+    },
+    {
+        "id": "2ef3435761fdc54187c5af5567db5a874c45c0602998b8a92aeb9a9afbed1df8",
+        "title": "All norwegians born before 1802",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/01",
+        "question": "Who are citizens of Norway born before January 1, 1802 and died on or after January 1, 1802? For each person, if available, also include where they resided at.",
+        "sparql": "SELECT ?person ?residence\nWHERE {\n  ?person wdt:P31 wd:Q5 .\n  ?person wdt:P27 wd:Q20 .\n  ?person wdt:P569 ?birth .\n  ?person wdt:P570 ?death .\n  \n  OPTIONAL {\n    ?person p:P551 ?residenceStatement .\n    ?residenceStatement ps:P551 ?residence .\n  }\n  \n  FILTER (?birth < \"1802-01-01\"^^xsd:dateTime && ?death >= \"1802-01-01\"^^xsd:dateTime)\n  \n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "038d518d36404e1117ac38e1687bf9b422486a4ea3ade5e3d6c521ba34e421f0",
+        "title": "show qualifier",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/09",
+        "question": "What are episodes of the eighth season of the Lego Ninjago TV series, Sons of Garmadon, including their series ordinal positions as integers (i.e. which episode in the season), if available, and ordered by that?",
+        "sparql": "SELECT ?item ?itemLabel (xsd:integer(?number) AS ?no)\nWHERE\n{\n  ?item p:P4908 ?statement .\n  ?statement ps:P4908 wd:Q43133862 . # Item is season of Sons of Garmadon\n  OPTIONAL { ?statement pq:P1545 ?number . }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\" . }\n}\nORDER BY ?no"
+    },
+    {
+        "id": "ca0bc6ae27669c2ec20a0c09d4ac8fe90df80f71545d542d19eb950bacd2d77b",
+        "title": "Crear mapa con una exposici\u00f3n",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/05",
+        "question": "Who are the participants of the exhibition \"Estudiotik at. Five years of creation,\" and if available, their place of birth coordinates?",
+        "sparql": "#defaultView:Map\nSELECT distinct ?item ?coord WHERE {\n  {wd:Q106591714 wdt:P710 ?item.}\n  UNION\n  {?item wdt:P1344 wd:Q106591714 . }\n  optional {?item wdt:P19/wdt:P625 ?coord.}\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "05fd33c6389b6734c16c91c5c8319865e18e0ee7cf8077a6c7844462634b2452",
+        "title": "List of artists in City of Pori art collection",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/03",
+        "question": "What are the names, dates of birth (if available), and dates of death (if available) of individuals who have works in the City of Pori art collection?",
+        "sparql": "SELECT ?item ?itemLabel ?date_of_birth ?date_of_death\nWHERE\n{\n  ?item wdt:P31 wd:Q5.\n  ?item wdt:P6379 wd:Q86443703.\n  OPTIONAL { ?item wdt:P569 ?date_of_birth. }\n  OPTIONAL { ?item wdt:P570 ?date_of_death. }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "171b91973efaedd35528343e901a9479ab076571f6be57a2ef5478073ffd640f",
+        "title": "Clash between COUNT and SERVICE wikibase:label ?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/04",
+        "question": "Who are the co-authors of Thomas Shafee? Return a list of tuples, where each tuple contains a pair of authors who have coauthored with Thomas Shafee on the same work, and a label of either \"male\" or \"other\" depending on whether the author is a male or not, for the first author in the triple",
+        "sparql": "\n# Egocentric co-author graph for an author\nSELECT ?author1 ?author1Label ?rgb ?author2 ?author2Label\nWITH {\n  SELECT (COUNT(?work) AS ?count) ?author1 ?author2 WHERE {\n    # Find co-authors\n    ?work wdt:P50 wd:Q38382414, ?author1, ?author2 .\n\n  }\n  GROUP BY ?author1 ?author2\n  ORDER BY DESC(?count)\n} AS %authors\nWITH {\n  SELECT ?author1 ?author2 ?rgb WHERE {\n    INCLUDE %authors\n    \n    # Exclude self-links\n    FILTER (?author1 != ?author2)\n    \n    # Color according to gender\n    OPTIONAL {\n      ?author1 wdt:P21 ?gender1 . \n      BIND( IF(?gender1 = wd:Q6581097, \"male\", \"other\") AS ?rgb)\n    }\n  }\n} AS %result\nWHERE {\n  INCLUDE %result\n  # Label the results \n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"en,fr,de,ru,es,zh,jp\". }\n}"
+    },
+    {
+        "id": "349879d94826fae886dada3747baced0693f22d20835bec4a4f184da49437860",
+        "title": "office held by head of government",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/01",
+        "question": "What are the political offices held by the heads of governmen for each region in Paphos District in the Republic of Cyprus?",
+        "sparql": "SELECT ?item ?authority  WHERE \n{\n  ?authority wdt:P131 wd:Q59133 .\n  ?authority wdt:P1313 ?item . \n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n} order by desc(?itemLabel)\n"
+    },
+    {
+        "id": "f704547d371c32a4a0d687a6d3a56f1cf16d161c60b506f524cffb17baf389af",
+        "title": "Wildcard characters in wdqs/sparql ?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/08",
+        "question": "What are the paintings whose Iconclass.org notation starting with \"71A\", along with their Iconclass notation values, and, if available, the corresponding entities that have the same Iconclass notation?",
+        "sparql": "SELECT ?item ?itemLabel ?value ?is ?isLabel \nWHERE\n{ \n  ?item wdt:P31 wd:Q3305213;\n        wdt:P1257 ?value.\n  FILTER(regex(?value,\"^71A.*$\"))\n  OPTIONAL { ?is wdt:P1256 ?value }\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "9eeb1116f509496327abcfc4d775bc05d1d3036c618fc0c6c9616beeed01ec2e",
+        "title": "Occupations of people born in Utah",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2017/09",
+        "question": "What are the occupations of people who were born in Utah? For each tuple include the person and their occupation.",
+        "sparql": "#occupations of people born in Utah\nSELECT ?person ?personLabel ?occupation\n\nWHERE {\n  {?person wdt:P19 wd:Q829.}\n  UNION\n  {?person wdt:P19 ?placeofbirth.\n   ?placeofbirth wdt:P131+ wd:Q829.}        \n  ?person wdt:P106 ?occupation.\n\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n"
+    },
+    {
+        "id": "6efb4386a45888174b8606de121ade32c9e79f91da4bac8bac31defdcd6fed42",
+        "title": "Most western city or town in Alabama?",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/05",
+        "question": "What are the 40 western-most towns or cities located in Alabama, and what are their longitudes and coordinates?",
+        "sparql": "SELECT DISTINCT ?item  ?long ?coords WHERE {\n   VALUES ?town_city {wd:Q3957 wd:Q515} .\n   ?item wdt:P31/wdt:P279* ?town_city .\n   ?item wdt:P131* wd:Q173 .\n   ?item p:P625/psv:P625/wikibase:geoLongitude ?long .\n   ?item wdt:P625 ?coords\n   SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n} \nORDER BY ?long LIMIT 40\n"
+    },
+    {
+        "id": "d21ffec738fbc60df840f74c67cb35bb662271e9f60954d244e61ce46dc28ff7",
+        "title": "Query all taxons which are trees",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2020/08",
+        "question": "What are the taxons of remarkable trees? For each taxon, also return its taxon rank  and count how many common names it has.",
+        "sparql": "SELECT\n  ?taxon ?rank\n  (COUNT(?commonname) as ?commonnamecount)\nWHERE\n{\n    { SELECT ?taxon WHERE { ?item wdt:P31 wd:Q811534 ; wdt:P31 ?taxon } GROUP BY ?taxon }\n    ?taxon wdt:P105 ?rank .\n    OPTIONAL { ?taxon wdt:P1843 ?commonname . FILTER(lang(?commonname) = \"[AUTO_LANGUAGE]\" )  }\n    SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en,fr,cs,pl\" }\n}\nGROUP BY ?taxon ?rank\n"
+    },
+    {
+        "id": "aa9edca8c855f3f66cfad4f47d7b1fbc079d521ae7c915b5b9d9411c828c9cad",
+        "title": "I'm trying to write a query to find American politicians whose father or mother was also a politician",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2021/08",
+        "question": "Who are politicians that are citizens of the United States and have either parent or mother being also a politican?",
+        "sparql": "SELECT DISTINCT ?item WHERE {\n ?item wdt:P31 wd:Q5;\n       wdt:P27 wd:Q30;\n       wdt:P106 wd:Q82955.\n {?item wdt:P22 ?father.\n ?father wdt:P106 wd:Q82955.}\n UNION\n {?item wdt:P25 ?mother.\n ?mother wdt:P106 wd:Q82955.}\n\n}\n"
+    },
+    {
+        "id": "f4c5c2ca5b0b15861980c2024da73f09a1e1f9aba452f81a2130092af660c67f",
+        "title": "Names of all cities around the world with a population larger than one million",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2019/11",
+        "question": "What are the cities with a population of at least one million people?",
+        "sparql": "SELECT DISTINCT ?city WHERE {\n  ?city wdt:P31/wdt:P279* wd:Q515 .\n  ?city wdt:P1082 ?population .\n  FILTER (?population >= 1000000) .\n}"
+    },
+    {
+        "id": "3d04f90a819a5ca63db183793c434e8c25ddc657d81881f1e607f5e9d30d4487",
+        "title": "Patronage of an Australian airport",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2018/12",
+        "question": "What are the Australian aerodrome and total number of passengers for the year 2016 (as opposed to just the number for Australian or rest of the world passengers ), ordered by the number of passengers in descending order?",
+        "sparql": "SELECT  ?item ?number \nWHERE \n{\n  ?item wdt:P31/wdt:P279* wd:Q62447 .\n  ?item wdt:P17 wd:Q408 .\n  ?item p:P3872 ?statement .\n    ?statement pq:P585 ?time .\n    ?statement pq:P518 ?applies_to .\n    ?statement ps:P3872 ?number .\n  filter(year(?time)=2016)\n  filter(?applies_to=wd:Q2165236)\nSERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n} order by desc(?number)\n"
+    },
+    {
+        "id": "965f82f908847da0bda4aaf1f04da4db6f860a6809e5487bac207f4316971f83",
+        "title": "Cross two variables in a table",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2024/04",
+        "question": "What are the counts of Byzantinists by their country of citizenship, categorized by gender (male, female, or other)? In other words, for each country, return how many byzantinists are male, female, and other.",
+        "sparql": "#title:Byzantinists by citizenship and gender\nSELECT ?nLabel (COUNT(?male_) AS ?male) (COUNT(?female_) AS ?female) (COUNT(?other_) AS ?other) \nWHERE {\n  ?item wdt:P106 wd:Q26132815 ; wdt:P27 ?n ; wdt:P21 ?g .\n  bind (coalesce(IF(?g = wd:Q6581097, 1, 1/0)) as ?male_)\n  bind (coalesce(IF(?g = wd:Q6581072, 1, 1/0)) as ?female_)\n  bind (coalesce(IF(?g not in (wd:Q6581097, wd:Q6581072), 1, 1/0)) as ?other_)\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE]\". }\n}\nGROUP BY ?nLabel\nORDER BY ?nLabel\n"
+    },
+    {
+        "id": "6f30d4f1a9e496994364566a3345dfd7d53d81560a2494db0b707dd3e5f3f48e",
+        "title": "Help simplifying query: Request all officeholders (p:`officeholder (P1308)`) and applies to jurisdiction (p:`applies to jurisdiction (P1001)`) of governors of a mexican state (wdt:`state governor of Mexico (Q17810142)`)",
+        "url": "https://www.wikidata.org/wiki/Wikidata:Request_a_query/Archive/2024/05",
+        "question": "For each state in Mexico, who is its current state governoer?",
+        "sparql": "SELECT ?item ?state\nWHERE {\n  # from all items that are subclass of state governor of mexico retrieve all items that have property p:P1308 and all items that have property p:1001\n  ?wiki_items p:P1308 ?statement. \n  ?wiki_items wdt:P279 wd:Q17810142.\n  ?statement ps:P1308 ?item.\n  ?wiki_items p:P1001 ?other_statement.\n  ?other_statement ps:P1001 ?state.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}\n\n"
+    }
+]
