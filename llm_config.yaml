@@ -1,0 +1,43 @@
+prompt_dirs: # relative to the location of this file
+  - "./prompts"
+  - "./llm_parser/prompts"
+
+litellm_set_verbose: false
+
+prompt_logging:
+  log_file: "./prompt_logs.jsonl"
+  prompts_to_skip:
+    - "if_remove_datapoint.prompt"
+    - "modify_datapoint.prompt"
+
+llm_endpoints:
+  - api_base: https://ovalopenairesource.openai.azure.com
+    api_version: "2024-02-15-preview"
+    api_key: "AZURE_OPENAI_API_KEY"
+    engine_map:
+      gpt-35-turbo-instruct: azure_text/gpt-35-turbo-instruct
+      gpt-4o: azure/gpt-4o-global
+
+  - api_base: https://api.openai.com/v1
+    api_key: OPENAI_API_KEY
+    engine_map: # OpenAI models don't need the "openai/" prefix
+      gpt-35-turbo: gpt-3.5-turbo-0125
+      gpt-4: gpt-4-turbo-2024-04-09
+
+  - api_key: TOGETHER_API_KEY
+    engine_map: # TODO non-instruct models don't work well because of LiteLLM's formatting issues, does not work with free accounts because of the 1 QPS limit
+      llama-2-70b: together_ai/togethercomputer/llama-2-70b
+
+  - api_base: https://api.mistral.ai/v1 # https://docs.mistral.ai/platform/endpoints/
+    api_key: MISTRAL_API_KEY
+    engine_map:
+      mistral-large: mistral/mistral-large-latest
+      mistral-medium: mistral/mistral-medium-latest
+      mistral-small: mistral/mistral-small-latest
+      mistral-7b-instruct: mistral/open-mistral-7b
+      mixtral-8-7b-instruct: mistral/open-mixtral-8x7b
+
+  - api_base: http://127.0.0.1:5004
+    prompt_format: distilled
+    engine_map:
+      wikisp: huggingface/wikisp
