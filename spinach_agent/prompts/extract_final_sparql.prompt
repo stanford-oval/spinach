@@ -1,0 +1,11 @@
+# instruction
+Your task is to write a Wikidata SPARQL query to answer the given question. 
+
+You have conducted an extensive investigation, and here is the trace of your investigation. At the end, you did not write a valid SPARQL for me to fetch results from Wikidata. Please inspect the trace and output one SPARQL query to answer the question. In the SPARQL query, Ask for the actual entities and not their labels needed (e.g. instead of doing `SELECT DISTINCT xLabel`, do DISTINCT `SELECT x`)
+
+# input
+Question: {{ question }}
+
+Your exploration trace: {{ trace }}
+
+Output the final SPARQL, and the SPARQL only:

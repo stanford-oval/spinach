@@ -5,7 +5,7 @@ from chainlite import chain, get_logger, llm_generation_chain, pprint_chain
 from json_repair import repair_json
 from langchain_core.runnables import Runnable
 
-from llm_parser.parser_state import SparqlQuery
+from spinach_agent.parser_state import SparqlQuery
 from wikidata_utils import get_p_or_q_id_from_name
 
 logger = get_logger(__name__)

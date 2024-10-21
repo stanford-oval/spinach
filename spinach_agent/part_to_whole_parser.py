@@ -7,14 +7,14 @@ from langgraph.graph import END, StateGraph
 from langchain_core.runnables import RunnablePassthrough
 
 
-from llm_parser.parser_state import (
+from spinach_agent.parser_state import (
     Action,
     PartToWholeParserState,
     SparqlQuery,
     state_to_dict,
     state_to_string,
 )
-from llm_parser.parser_utils import (
+from spinach_agent.parser_utils import (
     BaseParser,
     execute_sparql_object,
     get_prune_edges_chain,

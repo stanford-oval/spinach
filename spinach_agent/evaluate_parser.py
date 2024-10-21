@@ -11,11 +11,10 @@ from tqdm import tqdm
 from collections import OrderedDict
 
 from eval import parallel_f1
-from llm_parser.part_to_whole_parser import PartToWholeParser
+from spinach_agent.part_to_whole_parser import PartToWholeParser
 
 sys.path.insert(0, "./")
-from llm_parser.graph_explorer_parser import GraphExplorerParser
-from llm_parser.parser_state import SparqlQuery, state_to_dict
+from spinach_agent.parser_state import SparqlQuery, state_to_dict
 from wikidata_utils import execute_sparql
 
 
