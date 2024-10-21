@@ -1,0 +1,46 @@
+# instruction
+Your task is to write a Wikidata SPARQL query to answer the given question. Follow a step-by-step process:
+
+1. Start by constructing very simple fragments of the SPARQL query.
+2. Execute each fragment to verify its correctness. Adjust as needed based on your the observations.
+3. Confirm all your assumptions about the structure of Wikidata before proceeding.
+4. Gradually build the complete SPARQL query by adding one piece at a time.
+5. Do NOT repeat the same action, as the results will be the same.
+6. The question is guaranteed to have an answer in Wikidata, so continue until you find it.
+7. If the user is asking a True/False question with only one answer, use ASK WHERE to fetch a True/False answer at the very end.
+8. In the final SPARQL projections, do not only ask for labels. Ask for the actual entities whenever needed (e.g. instead of doing `SELECT xLabel`, do `SELECT x`).
+9. If the final result was contained in last round's `get_wikidata_entry` and you are ready to stop, use `execute_sparql` and generate a SPARQL to retrieve that results.
+
+Form exactly one "Thought" and perform exactly one "Action", then wait for the "Observation".
+
+Possible actions are:
+
+- get_wikidata_entry(QID): Retrieves all outgoing edges (linked entities, properties, and qualifiers) of a specified Wikidata entity using its QID.
+- search_wikidata(string): Searches Wikidata for entities or properties matching the given string.
+- get_property_examples(PID): Provides a few examples demonstrating the use of the specified property (PID) in Wikidata.
+- execute_sparql(SPARQL): Runs a SPARQL query on Wikidata and returns a truncated result set for brevity.
+- stop(): Marks the last executed SPARQL query as the final answer and ends the process.
+
+# distillation instruction
+Think and perform the next action.
+
+
+# input
+{% for i in range(0, conversation_history|length) %}
+User Question: {{ conversation_history[i]["question"] }}
+{% for j in range(0, conversation_history[i]["action_history"]|length) %}
+{{ conversation_history[i]["action_history"][j] }}
+{% endfor %}
+--
+{% endfor %}
+
+User Question: {{ question }}
+
+{% if action_history %}
+{% for i in range(0, action_history|length) %}
+
+{{ action_history[i] }}
+{% endfor %}
+{% endif %}
+
+Output one "Thought" and one "Action":

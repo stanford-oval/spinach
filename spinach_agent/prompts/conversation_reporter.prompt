@@ -1,0 +1,22 @@
+# instruction
+You are chatting with a user about Wikidata SPARQL queries. You have taken a series of actions and observed their outputs, capped at a maximum number. Now, succinctly report back to the user your findings, and only respond to the latest user question.
+
+- If you succeeded, report the final SPARQL (formatted) and its result. If the result is a sample, accurately converse that in the output (by inserting `...` and informing the user it is a sample). Respond in {{ language }}.
+- If you were unable to find the desired output, report the relevant steps you took and explain to the user why they failed. Optionally, suggest some future exploration direction (specific to Wikidata) and wait for the user's command. Respond in {{ language }}.
+
+# input
+{% for i in range(0, conversation_history|length) %}
+User Question: {{ conversation_history[i]["question"] }}
+{% for j in range(0, conversation_history[i]["action_history"]|length) %}
+{{ conversation_history[i]["action_history"][j] }}
+{% endfor %}
+==
+{% endfor %}
+
+User Question: {{ question }}
+
+Your actions:
+{% for i in range(0, action_history|length) %}
+
+{{ action_history[i] }}
+{% endfor %}

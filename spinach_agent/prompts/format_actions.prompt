@@ -1,0 +1,91 @@
+# instruction
+Convert each input to this JSON format:
+{
+    'thought': string,
+    'action_name': string, # one of 'get_wikidata_entry', 'search_wikidata', 'execute_sparql', 'get_property_examples', 'stop'
+    'action_argument': string
+}
+
+# distillation instruction
+Fix the format of the input.
+
+# input
+Thought: I will start by identifying the properties related to directors, their birth dates, archives, inventory numbers, and Cannes Film Festival awards. This will help in constructing the SPARQL query.
+Action: search_wikidata(director)
+
+# output
+{
+    'thought': 'I will start by identifying the properties related to directors, their birth dates, archives, inventory numbers, and Cannes Film Festival awards. This will help in constructing the SPARQL query.',
+    'action_name': 'search_wikidata',
+    'action_argument': 'director'
+}
+
+
+# input
+Thought: To answer the question, I need to identify the relevant properties for directors, their birth dates, archives, inventory numbers, and Cannes Film Festival awards. I will first search for the properties related to birth dates, archives, and Cannes Film Festival awards.
+Action:
+search_wikidata("birth date")
+
+# output
+{
+    'thought': 'To answer the question, I need to identify the relevant properties for directors, their birth dates, archives, inventory numbers, and Cannes Film Festival awards. I will first search for the properties related to birth dates, archives, and Cannes Film Festival awards.',
+    'action_name': 'search_wikidata',
+    'action_argument': 'birth date'
+}
+
+
+
+# input
+Thought: I have identified that the property for archives is "collection" (P195). Next, I need to search for properties related to Cannes Film Festival awards and inventory numbers.
+
+Action:   get_wikidata_entry(Q123)
+
+# output
+{
+    'thought': 'I have identified that the property for archives is "collection" (P195). Next, I need to search for properties related to Cannes Film Festival awards and inventory numbers.',
+    'action_name': 'get_wikidata_entry',
+    'action_argument': 'Q123'
+}
+
+
+# input
+Thought: I can go ahead and run SPARQL.
+
+Action: execute_sparql(
+  """SELECT ?director ?directorLabel ?birthDate ?archive ?archiveLabel ?inventoryNumber ?film ?filmLabel WHERE {
+  ?director wdt:P106 wd:Q2526255; # Select entities that are film directors
+           wdt:P569 ?birthDate. # Select their birth dates
+  FILTER(?birthDate >= "1920-01-01T00:00:00Z"^^xsd:dateTime && ?birthDate < "1930-01-01T00:00:00Z"^^xsd:dateTime). # Filter birth dates between 1920 and 1930
+  OPTIONAL {
+    ?director wdt:P195 ?archive. # Select the archive institutions
+    OPTIONAL { ?director wdt:P217 ?inventoryNumber. } # Select inventory numbers if available
+  }
+  ?film wdt:P57 ?director; # Select films directed by the director
+        wdt:P166 ?award. # Select awards received by the films
+  ?award wdt:P31 wd:Q28444913. # Filter for Cannes Film Festival awards
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+""")
+
+# output
+{
+    'thought': 'I can go ahead and run SPARQL.',
+    'action_name': 'execute_sparql',
+    'action_argument': 'SELECT ?director ?directorLabel ?birthDate ?archive ?archiveLabel ?inventoryNumber ?film ?filmLabel WHERE {
+  ?director wdt:P106 wd:Q2526255;
+    wdt:P569 ?birthDate.
+  FILTER((?birthDate >= "1920-01-01T00:00:00Z"^^xsd:dateTime) && (?birthDate < "1930-01-01T00:00:00Z"^^xsd:dateTime))
+  OPTIONAL {
+    ?director wdt:P195 ?archive.
+    OPTIONAL { ?director wdt:P217 ?inventoryNumber. }
+  }
+  ?film wdt:P57 ?director;
+    wdt:P166 ?award.
+  ?award wdt:P31 wd:Q28444913.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}'
+}
+
+
+# input
+{{ input }}

@@ -1,0 +1,9 @@
+# instruction
+
+Which natural language is the following sentence? If there are multiple or if you don't recognize, say "English":
+
+# input
+
+{{ question }}
+
+This language is in:

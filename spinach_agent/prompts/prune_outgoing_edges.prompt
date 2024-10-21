@@ -1,0 +1,210 @@
+# instruction
+At each turn, you are given a Wikidata entry and a question.
+You want to write a SPARQL query that answers the question.
+As the first step, remove the parts of the Wikidata entry that could not be potentially helpful when writing the SPARQL.
+The output should be a json object containing part of the Wikidata entry.
+
+# distillation instruction
+Prune this Wikidata entry.
+
+# input
+Wikidata entry for OneRepublic (Q1438730, 'OneRepublic' is an American pop rock band formed in Colorado Springs, Colorado, in 2002):
+{
+  "instance of (P31)": "musical group (Q215380)",
+  "genre (P136)": [
+    "pop rock (Q484641)",
+    "alternative rock (Q11366)",
+    "cello rock (Q3644819)"
+  ],
+  "record label (P264)": "Columbia Records (Q183387)",
+  "discography (P358)": "OneRepublic discography (Q935670)",
+  "country of origin (P495)": "United States of America (Q30)",
+  "has part(s) (P527)": [
+    "Ryan Tedder (Q351061)",
+    "Brent Kutzle (Q2617484)",
+    "Drew Brown (Q11694992)",
+    "Zach Filkins (Q4484208)",
+    "Eddie Fisher (Q363708)"
+  ],
+  "inception (P571)": "1 January 2009",
+  "location of formation (P740)": "Colorado Springs (Q49258)",
+  "official website (P856)": {
+    "http://onerepublic.com/": {
+      "Qualifiers": [
+        {
+          "language of work or name (P407)": "English"
+        }
+      ]
+    }
+  },
+  "work period (start) (P2031)": "1 January 2002",
+  "has list (P2354)": "list of awards and nominations received by OneRepublic (Q17462744)",
+  "social media followers (P8687)": {
+    "3134158": {
+      "Qualifiers": [
+        {
+          "point in time (P585)": "4 February 2023"
+        }
+      ]
+    },
+    "3276596": {
+      "Qualifiers": [
+        {
+          "point in time (P585)": "6 January 2021"
+        }
+      ]
+    },
+    "3178896": {
+      "Qualifiers": [
+        {
+          "point in time (P585)": "2 March 2022"
+        }
+      ]
+    },
+    "3720919": {
+      "Qualifiers": [
+        {
+          "point in time (P585)": "10 May 2018"
+        }
+      ]
+    }
+  }
+}
+
+Question: "What is the title of the second single on OneRepublic's third album Native?"
+
+# output
+{
+  "instance of (P31)": "musical group (Q215380)",
+  "record label (P264)": "Columbia Records (Q183387)",
+  "discography (P358)": "OneRepublic discography (Q935670)",
+}
+
+
+
+# input
+Wikidata entry for Barack Obama Sr. (Q649593, Barack Obama Sr. was an economist and the father of Barack Obama jr.):
+{
+  "place of birth (P19)": {
+    "Nyang'oma Kogelo (Q1027168)": {
+      "Qualifiers": [
+        {
+          "country (P17)": "Kenya Colony"
+        }
+      ]
+    }
+  },
+  "place of death (P20)": "Nairobi (Q3870)",
+  "sex or gender (P21)": "male (Q6581097)",
+  "father (P22)": "Hussein Onyango Obama (Q15982328)",
+  "spouse (P26)": {
+    "Ruth Ndesandjo (Q15982192)": {
+      "Qualifiers": [
+        {
+          "end time (P582)": "1 January 1973",
+          "start time (P580)": "24 December 1964"
+        }
+      ]
+    },
+    "Kezia Obama (Q15982183)": {
+      "Qualifiers": [
+        {
+          "start time (P580)": "1 January 1954"
+        }
+      ]
+    },
+    "Stanley Ann Dunham (Q766106)": {
+      "Qualifiers": [
+        {
+          "end time (P582)": "1 January 1964",
+          "start time (P580)": "2 February 1961"
+        }
+      ]
+    }
+  },
+  "country of citizenship (P27)": "Kenya (Q114)",
+  "instance of (P31)": "human (Q5)",
+  "child (P40)": [
+    "Abo Obama (Q15982321)",
+    "David Ndesandjo (Q15982309)",
+    "Bernard Obama (Q15982322)",
+    "Mark Okoth Obama Ndesandjo (Q15982189)",
+    "George Hussein Onyango Obama (Q15982326)",
+    "Malik Obama (Q15982167)",
+    "Barack Obama (Q76)",
+    "Auma Obama (Q773197)"
+  ],
+  "educated at (P69)": [
+    "Maseno School (Q6782972)",
+    "University of Hawaiʻi (Q217439)",
+    "Harvard University (Q13371)"
+  ],
+  "field of work (P101)": "economics (Q8134)",
+  "occupation (P106)": "economist (Q188094)",
+  "place of burial (P119)": "Nyang'oma Kogelo (Q1027168)",
+  "religion or worldview (P140)": [
+    "Islam (Q432)",
+    "atheism (Q7066)"
+  ],
+  "member of (P463)": "Phi Beta Kappa Society (Q1938003)",
+  "cause of death (P509)": "traffic collision (Q9687)",
+  "date of birth (P569)": "18 June 1934",
+  "date of death (P570)": "24 November 1982",
+  "family name (P734)": "Obama (Q5280414)",
+  "given name (P735)": {
+    "Barack (Q18643532)": {
+      "Qualifiers": [
+        {
+          "series ordinal (P1545)": "1"
+        }
+      ]
+    },
+    "Hussein (Q27101961)": {
+      "Qualifiers": [
+        {
+          "series ordinal (P1545)": "2"
+        }
+      ]
+    }
+  },
+  "manner of death (P1196)": "accidental death (Q21142718)",
+  "languages spoken, written or signed (P1412)": "English (Q1860)",
+  "birth name (P1477)": "Barack Hussein Obama, Sr.",
+  "name in native language (P1559)": "Barack Hussein Obama, Sr.",
+  "generational suffix (P8017)": "L252248-F2"
+}
+
+Question: "where did barack obama sr. attend school?"
+
+# output
+{
+  "place of birth (P19)": {
+    "Nyang'oma Kogelo (Q1027168)": {
+      "Qualifiers": [
+        {
+          "country (P17)": "Kenya Colony"
+        }
+      ]
+    }
+  },
+  "place of death (P20)": "Nairobi (Q3870)",
+  "country of citizenship (P27)": "Kenya (Q114)",
+  "educated at (P69)": [
+    "Maseno School (Q6782972)",
+    "University of Hawaiʻi (Q217439)",
+    "Harvard University (Q13371)"
+  ],
+  "member of (P463)": "Phi Beta Kappa Society (Q1938003)",
+}
+
+
+
+# input
+Wikidata entry for "{{ entity_and_description }}":
+{{ outgoing_edges }}
+
+{% for i in range(0, conversation_history|length) %}
+(Context) Past-turn Question: "{{ conversation_history[i]["question"] }}"
+{% endfor %}
+
+Current Question: "{{ question }}"
