@@ -216,7 +216,7 @@ if __name__ == "__main__":
         results = execute_sparql(d["sparql"])
         if results == []:
             continue
-        questions.append(d["question"])
+        questions.append({"question": d["question"], "conversation_history": []})
         gold_answers.append(
             results
         ) # we do not convert to string here
