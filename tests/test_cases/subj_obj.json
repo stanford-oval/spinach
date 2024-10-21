@@ -1,0 +1,42 @@
+[
+    {
+        "properties": ["P161"],
+        "query": "SELECT DISTINCT ?item ?itemLabel ?theatre_season ?theatre_seasonLabel ?characterLabel ?location ?firstperformance\nWHERE {\n  ?item wdt:P31 wd:Q7777570;\n    wdt:P161 wd:Q60582840;\n   SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],el\". }\n  OPTIONAL { ?item wdt:P2348 ?theatre_season. }\nOPTIONAL { ?item wdt:P276 ?location. }\n         FILTER NOT EXISTS {?location wdt:P31 wd:Q194428. }\n  OPTIONAL { ?item p:P161 [\n            ps:P161 wd:Q60582840;\n            pq:P453|pq:P4633 ?character\n          ] }\nOPTIONAL { ?item wdt:P1191 ?firstperformance. }\n     }\nORDER BY ASC (?theatre_seasonLabel) (?firstperformance)"
+    },
+    {
+        "properties": ["P161"],
+        "query": "SELECT ?item (COUNT(DISTINCT(?film)) AS ?ct) WHERE { VALUES ?filmtype {wd:Q11424 wd:Q24862 wd:Q20667187 wd:Q226730} . ?film wdt:P31 ?filmtype . ?film wdt:P161 ?item . } GROUP BY ?item ORDER BY DESC(?ct) LIMIT 12\n\n"
+    },
+    {
+        "properties": ["P161"],
+        "query": "SELECT DISTINCT ?item\nWHERE \n{\n  ?production wdt:P31\/wdt:P279* wd:Q43099500.\n  ?production wdt:P161 ?item.\n  ?item wdt:P31\/wdt:P279* wd:Q5.\n}\n}}\n\n\n<div lang=\"en\" dir=\"ltr\" class=\"mw-content-ltr\">\n=== Items of the class \"Human\" and the occupation \"stage director\" (or a sub-class thereof) ===\n<\/div>\n"
+    },
+    {
+        "properties": ["P161", "P725"],
+        "query": "SELECT ?item ?itemLabel ?languageLabel (count(?actor) as ?countActors) (count(?charName) as ?countCharsNames) (count(?charItem) as ?countCharItems)\nWHERE \n{\n  ?item wdt:P31 wd:Q7889.\n  ?item (p:P725|p:161) ?cast.\n  ?cast (ps:P725|ps:161) ?actor.\n  optional{?cast pq:P4633 ?charName.}\n  optional{?cast pq:P453 ?charItem.}\n  optional{?cast pq:P407 ?language.}\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". } # Helps get the label in your language, if not, then en language\n}\ngroup by ?item ?itemLabel ?languageLabel\norder by DESC(?countActors)"
+    },
+    {
+        "properties": ["P1810"],
+        "query": "SELECT ?item ?named ?pages ?url WHERE {\n  ?item wdt:P31 wd:Q5.\n  ?item wdt:P1343 wd:Q100348221.\n  ?item p:P1343 ?statement.\n  OPTIONAL {?statement pq:P1810 ?named ; ps:P1343 wd:Q100348221.}\n  OPTIONAL {?statement pq:P304 ?pages ; ps:P1343 wd:Q100348221.}\n  OPTIONAL {?statement pq:P2699 ?url ; ps:P1343 wd:Q100348221.}\n  }\n"
+    },
+    {
+        "properties": ["P1365"],
+        "query": "#Potential merge\/takeover dates for former hospitals of a hospital\nSELECT ?oldHospitals ?oldHospitalsLabel ?takeoverMergeDate WHERE {\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],de\". }\n    wd:Q50038789 wdt:P1365 ?oldHospitals; #Find all former hospitals of \"Sana Klinikum Lichtenberg\u201d\n    wdt:P571 ?newHospitalInception.\n  OPTIONAL {\n    ?oldHospitals wdt:P582 ?takeoverMergeDate. #End time property is potential takeover\/merge date\n  } \n  #If end time couldn't be found, use new hospital's inception date\n  BIND (COALESCE(?takeoverMergeDate, ?newHospitalInception) As ?takeoverMergeDate)\n}"
+    },
+    {
+        "properties": ["P1365", "P1366"],
+        "query": "SELECT ?item ?itemLabel ?inici ?final ?abans ?abansLabel ?despres ?despresLabel ?color\n                   ?partit ?partitLabel ?gabinet ?gabinetLabel ?legislatura ?legislaturaLabel WHERE {\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n  ?item  p:P39 ?statement.\n  ?statement ps:P39 ?carrec.\n  OPTIONAL { ?statement pq:P580 ?inici.}\n  OPTIONAL { ?statement pq:P582 ?final. }\n  OPTIONAL { ?statement pq:P1365 ?abans. }\n  OPTIONAL { ?statement pq:P1366 ?despres. }\n  OPTIONAL { ?statement pq:P5054 ?gabinet. }\n  OPTIONAL { ?statement pq:P2937 ?legislatura. }\n  OPTIONAL { ?item wdt:P18 ?imatge. }\n  OPTIONAL { ?item wdt:P102 ?partit. }\n  OPTIONAL { ?partit wdt:P465 ?color. }\n  FILTER(?carrec = wd:Q30101464)\n}"
+    },
+    {
+        "properties": ["P1366"],
+        "query": "#-----------------------------------------------------\n# Items with HASC and end date\n#-----------------------------------------------------\n#defaultView:Table;Map\nSELECT ?hasc ?item ?itemLabel ?countryLabel ?enddate ?continued_by ?continued_byLabel ?coordinate\nWHERE\n{\n    ?item wdt:P8119 ?hasc .                       # hasc\n    ?item wdt:P576 ?enddate.                      # enddate\n     OPTIONAL { ?item wdt:P1366 ?continued_by. }  # continued by\n    OPTIONAL { ?item wdt:P625 ?coordinate. }      # coordinate\n    OPTIONAL { ?item wdt:P17  ?country. }         # country\n    SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en,de\". }\n}\norder by ?enddate"
+    },
+    {
+        "properties": ["P156"],
+        "query": "#defaultView:Graph\nSELECT DISTINCT ?item ?itemLabel ?se ?seLabel (\"00FFFF\" AS ?rgb) WHERE {\n  ?item wdt:P156 ?se.\n  ?item (wdt:P31\/wdt:P279*) wd:Q4830453.\n  {?item wdt:P452 wd:Q880371}\n  UNION {?item wdt:P1056 wd:Q7397}.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}"
+    },
+    {
+        "properties": ["P156"],
+        "query": "SELECT DISTINCT ?boatClass(REPLACE(STR(?boatClass),\".*Q\",\"Q\") AS ?boatClassQ) ?boatClassLabel ?followingClassLabel\nWHERE\n{\n  ?boatClass wdt:P31\/wdt:P279* wd:Q121289722 .\n  ?boatClass wdt:P156 ?followingClass .\n  FILTER NOT EXISTS {?followingClass wdt:P31\/wdt:P279* wd:Q121289722 .}\n  SERVICE wikibase:label {bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en,fr,es,it,de,pl\".}\n}\nLIMIT 500"
+    }
+]

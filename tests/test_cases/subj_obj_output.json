@@ -1,0 +1,84 @@
+[
+  {
+    "properties": [
+      "P161"
+    ],
+    "query": "SELECT DISTINCT ?item ?itemLabel ?theatre_season ?theatre_seasonLabel ?characterLabel ?location ?firstperformance\nWHERE {\n  ?item wdt:P31 wd:Q7777570;\n    wdt:P161 wd:Q60582840;\n   SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],el\". }\n  OPTIONAL { ?item wdt:P2348 ?theatre_season. }\nOPTIONAL { ?item wdt:P276 ?location. }\n         FILTER NOT EXISTS {?location wdt:P31 wd:Q194428. }\n  OPTIONAL { ?item p:P161 [\n            ps:P161 wd:Q60582840;\n            pq:P453|pq:P4633 ?character\n          ] }\nOPTIONAL { ?item wdt:P1191 ?firstperformance. }\n     }\nORDER BY ASC (?theatre_seasonLabel) (?firstperformance)",
+    "verbalized_sparql": "Find the theatrical productions in which Sofia Seirli was a cast member, and retrieve their labels, theatre seasons, characters played by Sofia Seirli, locations, and dates of the first performance, while filtering out stage locations, and ordering the results by theatre season and first performance date.",
+    "modified_sparql": "SELECT DISTINCT ?item ?itemLabel ?theatre_season ?theatre_seasonLabel ?characterLabel ?location ?firstperformance\nWHERE {\n  ?item wdt:[instance of] wd:[theatrical production];\n    wdt:[cast member] wd:[Sofia Seirli];\n   SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],el\". }\n  OPTIONAL { ?item wdt:[time period] ?theatre_season. }\nOPTIONAL { ?item wdt:[location] ?location. }\n         FILTER NOT EXISTS {?location wdt:[instance of] wd:[stage]. }\n  OPTIONAL { ?item p:[cast member] [\n            ps:[cast member] wd:[Sofia Seirli];\n            pq:[character role]|pq:[name of the character role] ?character\n          ] }\nOPTIONAL { ?item wdt:[date of first performance] ?firstperformance. }\n     }\nORDER BY ASC (?theatre_seasonLabel) (?firstperformance)"
+  },
+  {
+    "properties": [
+      "P161"
+    ],
+    "query": "SELECT ?item (COUNT(DISTINCT(?film)) AS ?ct) WHERE { VALUES ?filmtype {wd:Q11424 wd:Q24862 wd:Q20667187 wd:Q226730} . ?film wdt:P31 ?filmtype . ?film wdt:P161 ?item . } GROUP BY ?item ORDER BY DESC(?ct) LIMIT 12\n\n",
+    "verbalized_sparql": "Count the distinct films in which each individual has acted, considering film, short film, silent short film, and silent film, and limit the results to the top 12 individuals with the highest count.",
+    "modified_sparql": "SELECT ?item (COUNT(DISTINCT(?film)) AS ?ct) WHERE { VALUES ?filmtype {wd:[film] wd:[short film] wd:[silent short film] wd:[silent film]} . ?film wdt:[instance of] ?filmtype . ?film wdt:[cast member] ?item . } GROUP BY ?item ORDER BY DESC(?ct) LIMIT 12\n\n"
+  },
+  {
+    "properties": [
+      "P161"
+    ],
+    "query": "SELECT DISTINCT ?item\nWHERE \n{\n  ?production wdt:P31/wdt:P279* wd:Q43099500.\n  ?production wdt:P161 ?item.\n  ?item wdt:P31/wdt:P279* wd:Q5.\n}\n}}\n\n\n<div lang=\"en\" dir=\"ltr\" class=\"mw-content-ltr\">\n=== Items of the class \"Human\" and the occupation \"stage director\" (or a sub-class thereof) ===\n</div>\n",
+    "verbalized_sparql": "Find all the distinct individuals who are cast members of performing arts productions and are classified as human or a subclass of human.",
+    "modified_sparql": "SELECT DISTINCT ?item\nWHERE \n{\n  ?production wdt:[instance of]/wdt:[subclass of]* wd:[performing arts production].\n  ?production wdt:[cast member] ?item.\n  ?item wdt:[instance of]/wdt:[subclass of]* wd:[human].\n}\n}}\n\n\n<div lang=\"en\" dir=\"ltr\" class=\"mw-content-ltr\">\n=== Items of the class \"Human\" and the occupation \"stage director\" (or a sub-class thereof) ===\n</div>\n"
+  },
+  {
+    "properties": [
+      "P161",
+      "P725"
+    ],
+    "query": "SELECT ?item ?itemLabel ?languageLabel (count(?actor) as ?countActors) (count(?charName) as ?countCharsNames) (count(?charItem) as ?countCharItems)\nWHERE \n{\n  ?item wdt:P31 wd:Q7889.\n  ?item (p:P725|p:161) ?cast.\n  ?cast (ps:P725|ps:161) ?actor.\n  optional{?cast pq:P4633 ?charName.}\n  optional{?cast pq:P453 ?charItem.}\n  optional{?cast pq:P407 ?language.}\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". } # Helps get the label in your language, if not, then en language\n}\ngroup by ?item ?itemLabel ?languageLabel\norder by DESC(?countActors)",
+    "verbalized_sparql": "Find the video games, their labels, language labels, and count of actors, character names, and character items, and order the results by the count of actors in descending order.",
+    "modified_sparql": "SELECT ?item ?itemLabel ?languageLabel (count(?actor) as ?countActors) (count(?charName) as ?countCharsNames) (count(?charItem) as ?countCharItems)\nWHERE \n{\n  ?item wdt:[instance of] wd:[video_game].\n  ?item (p:[voice actor]|p:161) ?cast.\n  ?cast (ps:[voice actor]|ps:161) ?actor.\n  optional{?cast pq:[name of the character role] ?charName.}\n  optional{?cast pq:[character role] ?charItem.}\n  optional{?cast pq:[language of work or name] ?language.}\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". } # Helps get the label in your language, if not, then en language\n}\ngroup by ?item ?itemLabel ?languageLabel\norder by DESC(?countActors)"
+  },
+  {
+    "properties": [
+      "P1810"
+    ],
+    "query": "SELECT ?item ?named ?pages ?url WHERE {\n  ?item wdt:P31 wd:Q5.\n  ?item wdt:P1343 wd:Q100348221.\n  ?item p:P1343 ?statement.\n  OPTIONAL {?statement pq:P1810 ?named ; ps:P1343 wd:Q100348221.}\n  OPTIONAL {?statement pq:P304 ?pages ; ps:P1343 wd:Q100348221.}\n  OPTIONAL {?statement pq:P2699 ?url ; ps:P1343 wd:Q100348221.}\n  }\n",
+    "verbalized_sparql": "Find the human entities described by the source 'Die Auswirkungen der Annexion \u00d6sterreichs durch das Deutsche Reich auf die medizinische Fakult\u00e4t der Universit\u00e4t Wien im Jahre 1938', and retrieve the named subject, page(s), and URL of the source for each entity.",
+    "modified_sparql": "SELECT ?item ?named ?pages ?url WHERE {\n  ?item wdt:[instance of] wd:[human].\n  ?item wdt:[described by source] wd:[Die Auswirkungen der Annexion \u00d6sterreichs durch das Deutsche Reich auf die medizinische Fakult\u00e4t der Universit\u00e4t Wien im Jahre 1938].\n  ?item p:[described by source] ?statement.\n  OPTIONAL {?statement pq:[subject named as] ?named ; ps:[described by source] wd:[Die Auswirkungen der Annexion \u00d6sterreichs durch das Deutsche Reich auf die medizinische Fakult\u00e4t der Universit\u00e4t Wien im Jahre 1938].}\n  OPTIONAL {?statement pq:[page(s)] ?pages ; ps:[described by source] wd:[Die Auswirkungen der Annexion \u00d6sterreichs durch das Deutsche Reich auf die medizinische Fakult\u00e4t der Universit\u00e4t Wien im Jahre 1938].}\n  OPTIONAL {?statement pq:[URL] ?url ; ps:[described by source] wd:[Die Auswirkungen der Annexion \u00d6sterreichs durch das Deutsche Reich auf die medizinische Fakult\u00e4t der Universit\u00e4t Wien im Jahre 1938].}\n  }\n"
+  },
+  {
+    "properties": [
+      "P1365"
+    ],
+    "query": "#Potential merge/takeover dates for former hospitals of a hospital\nSELECT ?oldHospitals ?oldHospitalsLabel ?takeoverMergeDate WHERE {\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],de\". }\n    wd:Q50038789 wdt:P1365 ?oldHospitals; #Find all former hospitals of \"Sana Klinikum Lichtenberg\u201d\n    wdt:P571 ?newHospitalInception.\n  OPTIONAL {\n    ?oldHospitals wdt:P582 ?takeoverMergeDate. #End time property is potential takeover/merge date\n  } \n  #If end time couldn't be found, use new hospital's inception date\n  BIND (COALESCE(?takeoverMergeDate, ?newHospitalInception) As ?takeoverMergeDate)\n}",
+    "verbalized_sparql": "Find the former hospitals of Sana Klinikum Lichtenberg and their potential takeover or merge dates.",
+    "modified_sparql": "#Potential merge/takeover dates for former hospitals of a hospital\nSELECT ?oldHospitals ?oldHospitalsLabel ?takeoverMergeDate WHERE {\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],de\". }\n    wd:[Sana Klinikum Lichtenberg] wdt:[replaces] ?oldHospitals; #Find all former hospitals of \"Sana Klinikum Lichtenberg\u201d\n    wdt:[inception] ?newHospitalInception.\n  OPTIONAL {\n    ?oldHospitals wdt:[end time] ?takeoverMergeDate. #End time property is potential takeover/merge date\n  } \n  #If end time couldn't be found, use new hospital's inception date\n  BIND (COALESCE(?takeoverMergeDate, ?newHospitalInception) As ?takeoverMergeDate)\n}"
+  },
+  {
+    "properties": [
+      "P1365",
+      "P1366"
+    ],
+    "query": "SELECT ?item ?itemLabel ?inici ?final ?abans ?abansLabel ?despres ?despresLabel ?color\n                   ?partit ?partitLabel ?gabinet ?gabinetLabel ?legislatura ?legislaturaLabel WHERE {\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n  ?item  p:P39 ?statement.\n  ?statement ps:P39 ?carrec.\n  OPTIONAL { ?statement pq:P580 ?inici.}\n  OPTIONAL { ?statement pq:P582 ?final. }\n  OPTIONAL { ?statement pq:P1365 ?abans. }\n  OPTIONAL { ?statement pq:P1366 ?despres. }\n  OPTIONAL { ?statement pq:P5054 ?gabinet. }\n  OPTIONAL { ?statement pq:P2937 ?legislatura. }\n  OPTIONAL { ?item wdt:P18 ?imatge. }\n  OPTIONAL { ?item wdt:P102 ?partit. }\n  OPTIONAL { ?partit wdt:P465 ?color. }\n  FILTER(?carrec = wd:Q30101464)\n}",
+    "verbalized_sparql": "Retrieve the details of individuals who have held the position of Minister of the Economy, including their start time, end time, predecessor, successor, member of cabinet, parliamentary term, image, political party, and the color of the political party.",
+    "modified_sparql": "SELECT ?item ?itemLabel ?inici ?final ?abans ?abansLabel ?despres ?despresLabel ?color\n                   ?partit ?partitLabel ?gabinet ?gabinetLabel ?legislatura ?legislaturaLabel WHERE {\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n  ?item  p:[position held] ?statement.\n  ?statement ps:[position held] ?carrec.\n  OPTIONAL { ?statement pq:[start time] ?inici.}\n  OPTIONAL { ?statement pq:[end time] ?final. }\n  OPTIONAL { ?statement pq:[replaces] ?abans. }\n  OPTIONAL { ?statement pq:[replaced by] ?despres. }\n  OPTIONAL { ?statement pq:[member of cabinet] ?gabinet. }\n  OPTIONAL { ?statement pq:[parliamentary term] ?legislatura. }\n  OPTIONAL { ?item wdt:[image] ?imatge. }\n  OPTIONAL { ?item wdt:[member of political party] ?partit. }\n  OPTIONAL { ?partit wdt:[sRGB color hex triplet] ?color. }\n  FILTER(?carrec = wd:[minister of the Economy])\n}"
+  },
+  {
+    "properties": [
+      "P1366"
+    ],
+    "query": "#-----------------------------------------------------\n# Items with HASC and end date\n#-----------------------------------------------------\n#defaultView:Table;Map\nSELECT ?hasc ?item ?itemLabel ?countryLabel ?enddate ?continued_by ?continued_byLabel ?coordinate\nWHERE\n{\n    ?item wdt:P8119 ?hasc .                       # hasc\n    ?item wdt:P576 ?enddate.                      # enddate\n     OPTIONAL { ?item wdt:P1366 ?continued_by. }  # continued by\n    OPTIONAL { ?item wdt:P625 ?coordinate. }      # coordinate\n    OPTIONAL { ?item wdt:P17  ?country. }         # country\n    SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en,de\". }\n}\norder by ?enddate",
+    "verbalized_sparql": "Retrieve the HASC, item, item label, country label, end date, continued by, continued by label, and coordinates for items with their corresponding HASC and end date, and optionally their replacement information and country, ordering the results by the end date.",
+    "modified_sparql": "#-----------------------------------------------------\n# Items with HASC and end date\n#-----------------------------------------------------\n#defaultView:Table;Map\nSELECT ?hasc ?item ?itemLabel ?countryLabel ?enddate ?continued_by ?continued_byLabel ?coordinate\nWHERE\n{\n    ?item wdt:[HASC] ?hasc .                       # hasc\n    ?item wdt:[dissolved, abolished or demolished date] ?enddate.                      # enddate\n     OPTIONAL { ?item wdt:[replaced by] ?continued_by. }  # continued by\n    OPTIONAL { ?item wdt:[coordinate location] ?coordinate. }      # coordinate\n    OPTIONAL { ?item wdt:[country]  ?country. }         # country\n    SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en,de\". }\n}\norder by ?enddate"
+  },
+  {
+    "properties": [
+      "P156"
+    ],
+    "query": "#defaultView:Graph\nSELECT DISTINCT ?item ?itemLabel ?se ?seLabel (\"00FFFF\" AS ?rgb) WHERE {\n  ?item wdt:P156 ?se.\n  ?item (wdt:P31/wdt:P279*) wd:Q4830453.\n  {?item wdt:P452 wd:Q880371}\n  UNION {?item wdt:P1056 wd:Q7397}.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}",
+    "verbalized_sparql": "Show a graph of items related to the business industry, including those related to the software industry or the production of software, and their relationships, with their labels displayed and color-coded.",
+    "modified_sparql": "#defaultView:Graph\nSELECT DISTINCT ?item ?itemLabel ?se ?seLabel (\"00FFFF\" AS ?rgb) WHERE {\n  ?item wdt:[followed by] ?se.\n  ?item (wdt:[instance of]/wdt:[subclass of]*) wd:[business].\n  {?item wdt:[industry] wd:[software industry]}\n  UNION {?item wdt:[product or material produced or service provided] wd:[software]}.\n  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". }\n}"
+  },
+  {
+    "properties": [
+      "P156"
+    ],
+    "query": "SELECT DISTINCT ?boatClass(REPLACE(STR(?boatClass),\".*Q\",\"Q\") AS ?boatClassQ) ?boatClassLabel ?followingClassLabel\nWHERE\n{\n  ?boatClass wdt:P31/wdt:P279* wd:Q121289722 .\n  ?boatClass wdt:P156 ?followingClass .\n  FILTER NOT EXISTS {?followingClass wdt:P31/wdt:P279* wd:Q121289722 .}\n  SERVICE wikibase:label {bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en,fr,es,it,de,pl\".}\n}\nLIMIT 500",
+    "verbalized_sparql": "Retrieve the boat classes and their following classes, excluding cases where the following class is also a boat class, and retrieve their labels in multiple languages.",
+    "modified_sparql": "SELECT DISTINCT ?boatClass(REPLACE(STR(?boatClass),\".*Q\",\"Q\") AS ?boatClassQ) ?boatClassLabel ?followingClassLabel\nWHERE\n{\n  ?boatClass wdt:[instance of]/wdt:[subclass of]* wd:[boat class] .\n  ?boatClass wdt:[followed by] ?followingClass .\n  FILTER NOT EXISTS {?followingClass wdt:[instance of]/wdt:[subclass of]* wd:[boat class] .}\n  SERVICE wikibase:label {bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en,fr,es,it,de,pl\".}\n}\nLIMIT 500"
+  }
+]
