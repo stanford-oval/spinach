@@ -1,0 +1,252 @@
+[
+  {
+    "id": 1,
+    "question": "Give me all cosmonauts.",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri  <http://www.wikidata.org/prop/direct/P106> <http://www.wikidata.org/entity/Q11631> . { ?uri <http://www.wikidata.org/prop/direct/P27> <http://www.wikidata.org/entity/Q15180> } UNION { ?uri <http://www.wikidata.org/prop/direct/P27> <http://www.wikidata.org/entity/Q159> } }"
+  },
+  {
+    "id": 2,
+    "question": "Give me the birthdays of all actors of the television show Charmed.",
+    "sparql": "SELECT DISTINCT ?date WHERE { <http://www.wikidata.org/entity/Q162371> <http://www.wikidata.org/prop/direct/P161>/<http://www.wikidata.org/prop/direct/P569> ?date . }"
+  },
+  {
+    "id": 3,
+    "question": "Who is the daughter of Robert Kennedy married to?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q25310> <http://www.wikidata.org/prop/direct/P40> ?daughter . ?daughter  <http://www.wikidata.org/prop/direct/P21> <http://www.wikidata.org/entity/Q6581072> . ?daughter  <http://www.wikidata.org/prop/direct/P26> ?uri .}"
+  },
+  {
+    "id": 4,
+    "question": "Which river does the Brooklyn Bridge cross?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q125006> <http://www.wikidata.org/prop/direct/P177> ?uri . }"
+  },
+  {
+    "id": 5,
+    "question": "How many countries are there in Europe?",
+    "sparql": "SELECT (COUNT(DISTINCT ?uri) as ?c) WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q6256> . ?uri <http://www.wikidata.org/prop/direct/P30> <http://www.wikidata.org/entity/Q46> . }"
+  },
+  {
+    "id": 6,
+    "question": "In which city did John F. Kennedy die?",
+    "sparql": "SELECT DISTINCT ?uri WHERE {  <http://www.wikidata.org/entity/Q9696> <http://www.wikidata.org/prop/direct/P20>/<http://www.wikidata.org/prop/direct/P131> ?uri . ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q515>  .  } "
+  },
+  {
+    "id": 7,
+    "question": "Does the Isar flow into a lake?",
+    "sparql": "ASK WHERE { <http://www.wikidata.org/entity/Q106588> <http://www.wikidata.org/prop/direct/P403> ?uri . ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q23397>  . } "
+  },
+  {
+    "id": 8,
+    "question": "Which countries have more than ten caves?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q6256>  . ?cave <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q35509> . { ?cave <http://www.wikidata.org/prop/direct/P17> ?uri . }  UNION { ?cave <http://www.wikidata.org/prop/direct/P131>/<http://www.wikidata.org/prop/direct/P17> ?uri . } } GROUP BY ?uri HAVING (COUNT(DISTINCT ?cave) > 10)"
+  },
+  {
+    "id": 9,
+    "question": "Are tree frogs a type of amphibian?",
+    "sparql": "ASK WHERE { <http://www.wikidata.org/entity/Q53696> <http://www.wikidata.org/prop/direct/P171>* <http://www.wikidata.org/entity/Q10908> . }"
+  },
+  {
+    "id": 10,
+    "question": "Who created Goofy?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q111135> <http://www.wikidata.org/prop/direct/P170> ?uri . }"
+  },
+  {
+    "id": 11,
+    "question": "Give me the capitals of all countries in Africa.",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?country <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q6256> . ?country  <http://www.wikidata.org/prop/direct/P30> <http://www.wikidata.org/entity/Q15> . ?country <http://www.wikidata.org/prop/direct/P36> ?uri . }"
+  },
+  {
+    "id": 12,
+    "question": "Give me all cities in New Jersey with more than 100000 inhabitants.",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q515> . ?uri <http://www.wikidata.org/prop/direct/P131>+ <http://www.wikidata.org/entity/Q1408> . ?uri <http://www.wikidata.org/prop/direct/P1082> ?population . FILTER(?population > 100000) }"
+  },
+  {
+    "id": 13,
+    "question": "Which museum exhibits The Scream by Munch?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q471379> <http://www.wikidata.org/prop/direct/P527>/<http://www.wikidata.org/prop/direct/P276> ?uri . ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q207694>}"
+  },
+  {
+    "id": 14,
+    "question": "Is Egypts largest city also its capital?",
+    "sparql": "ASK WHERE { { SELECT ?largest WHERE { ?largest <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q515> . ?largest <http://www.wikidata.org/prop/direct/P17> <http://www.wikidata.org/entity/Q79> . ?largest <http://www.wikidata.org/prop/direct/P1082> ?population . } ORDER BY DESC(?population) LIMIT 1 } <http://www.wikidata.org/entity/Q79> <http://www.wikidata.org/prop/direct/P36> ?largest . }"
+  },
+  {
+    "id": 15,
+    "question": "How many people live in the capital of Australia?",
+    "sparql": "SELECT DISTINCT ?number WHERE { <http://www.wikidata.org/entity/Q408> <http://www.wikidata.org/prop/direct/P36> ?uri . ?uri <http://www.wikidata.org/prop/direct/P1082> ?number . }"
+  },
+  {
+    "id": 16,
+    "question": "In which country is the Limerick Lake?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q6386177> <http://www.wikidata.org/prop/direct/P17> ?uri . }"
+  },
+  {
+    "id": 17,
+    "question": "Which television shows were created by John Cleese?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5398426>  . { ?uri <http://www.wikidata.org/prop/direct/P170> <http://www.wikidata.org/entity/Q25014> . } UNION { ?uri <http://www.wikidata.org/prop/direct/P170>/<http://www.wikidata.org/prop/direct/P527> <http://www.wikidata.org/entity/Q25014> . }  }"
+  },
+  {
+    "id": 18,
+    "question": "Which mountain is the highest after the Annapurna?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q8502> . ?uri <http://www.wikidata.org/prop/direct/P2044> ?elevation . <http://www.wikidata.org/entity/Q16466024> <http://www.wikidata.org/prop/direct/P2044> ?elevation2 . FILTER (?elevation < ?elevation2) . } ORDER BY DESC(?elevation) LIMIT 1"
+  },
+  {
+    "id": 19,
+    "question": "In which films directed by Garry Marshall was Julia Roberts starring?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q11424> . ?uri <http://www.wikidata.org/prop/direct/P57> <http://www.wikidata.org/entity/Q315087> . ?uri <http://www.wikidata.org/prop/direct/P161> <http://www.wikidata.org/entity/Q40523> . } "
+  },
+  {
+    "id": 20,
+    "question": "Was U.S. president Jackson involved in a war?",
+    "sparql": "ASK WHERE { <http://www.wikidata.org/entity/Q11817> <http://www.wikidata.org/prop/direct/P607> ?uri . }"
+  },
+  {
+    "id": 21,
+    "question": "Give me all communist countries.",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q849866> . } "
+  },
+  {
+    "id": 22,
+    "question": "Which awards did Douglas Hofstadter win?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q319308> <http://www.wikidata.org/prop/direct/P166> ?uri . }"
+  },
+  {
+    "id": 23,
+    "question": "What is the currency of the Czech Republic?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q213> <http://www.wikidata.org/prop/direct/P38> ?uri . }"
+  },
+  {
+    "id": 24,
+    "question": "Which countries adopted the Euro?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q6256> . ?uri <http://www.wikidata.org/prop/direct/P38> <http://www.wikidata.org/entity/Q4916>   . }"
+  },
+  {
+    "id": 25,
+    "question": "What is the area code of Berlin?",
+    "sparql": "SELECT DISTINCT ?string WHERE { <http://www.wikidata.org/entity/Q64> <http://www.wikidata.org/prop/direct/P473> ?string . }"
+  },
+  {
+    "id": 26,
+    "question": "Which countries have more than two official languages?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q6256> . ?uri <http://www.wikidata.org/prop/direct/P37> ?language . } GROUP BY ?uri HAVING(COUNT(?language)>2)"
+  },
+  {
+    "id": 27,
+    "question": "Who is the owner of Rolls-Royce?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q243278> <http://www.wikidata.org/prop/direct/P127> ?uri . }"
+  },
+  {
+    "id": 28,
+    "question": "Through which countries does the Yenisei river flow?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q78707> <http://www.wikidata.org/prop/direct/P17> ?uri . }"
+  },
+  {
+    "id": 29,
+    "question": "When did Latvia join the EU?",
+    "sparql": "SELECT DISTINCT ?date WHERE { <http://www.wikidata.org/entity/Q211> <http://www.wikidata.org/prop/P463> ?membership . ?membership <http://www.wikidata.org/prop/statement/P463> <http://www.wikidata.org/entity/Q458> . ?membership <http://www.wikidata.org/prop/qualifier/P580> ?date . }"
+  },
+  {
+    "id": 30,
+    "question": "Which politicians were married to a German?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P106> <http://www.wikidata.org/entity/Q82955> . ?uri <http://www.wikidata.org/prop/direct/P26> ?spouse . { ?spouse <http://www.wikidata.org/prop/direct/P27> <http://www.wikidata.org/entity/Q183> . } UNION { ?spouse <http://www.wikidata.org/prop/direct/P19>/<http://www.wikidata.org/prop/direct/P17> <http://www.wikidata.org/entity/Q183> } } "
+  },
+  {
+    "id": 31,
+    "question": "When was the Battle of Gettysburg?",
+    "sparql": "SELECT DISTINCT ?date WHERE { <http://www.wikidata.org/entity/Q33132> <http://www.wikidata.org/prop/direct/P580> ?date . }"
+  },
+  {
+    "id": 32,
+    "question": "What is the highest mountain in Australia?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q8502> . ?uri <http://www.wikidata.org/prop/direct/P30> <http://www.wikidata.org/entity/Q3960> . ?uri <http://www.wikidata.org/prop/direct/P2044> ?height. } ORDER BY DESC(?height) LIMIT 1"
+  },
+  {
+    "id": 33,
+    "question": "Give me all soccer clubs in Spain.",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q476028> . ?uri <http://www.wikidata.org/prop/direct/P17> <http://www.wikidata.org/entity/Q29> . }"
+  },
+  {
+    "id": 34,
+    "question": "What is the official language of Suriname?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q730> <http://www.wikidata.org/prop/direct/P37> ?uri . }"
+  },
+  {
+    "id": 35,
+    "question": "Who is the mayor of Tel Aviv?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q33935> <http://www.wikidata.org/prop/direct/P6> ?uri . }"
+  },
+  {
+    "id": 36,
+    "question": "Which telecommunications organizations are located in Belgium?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q43229> } UNION { ?uri <http://www.wikidata.org/prop/direct/P31>/(<http://www.wikidata.org/prop/direct/P279>*) <http://www.wikidata.org/entity/Q43229> } . ?uri <http://www.wikidata.org/prop/direct/P452> <http://www.wikidata.org/entity/Q418> .  ?uri <http://www.wikidata.org/prop/direct/P17> <http://www.wikidata.org/entity/Q31> . }"
+  },
+  {
+    "id": 37,
+    "question": "Is Frank Herbert still alive?",
+    "sparql": "ASK WHERE { <http://www.wikidata.org/entity/Q7934> <http://www.wikidata.org/prop/direct/P570> ?date . FILTER(!BOUND(?date)) }"
+  },
+  {
+    "id": 38,
+    "question": "What is the highest place of the Urals?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q35600> <http://www.wikidata.org/prop/direct/P610> ?uri . }"
+  },
+  {
+    "id": 39,
+    "question": "Who wrote the lyrics for the Polish national anthem?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q36> <http://www.wikidata.org/prop/direct/P85>/<http://www.wikidata.org/prop/direct/P676> ?uri . }"
+  },
+  {
+    "id": 40,
+    "question": "Give me all federal chancellors of Germany.",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P39> <http://www.wikidata.org/entity/Q4970706> . } "
+  },
+  {
+    "id": 41,
+    "question": "What is the official website of Tom Cruise?",
+    "sparql": "SELECT DISTINCT ?string WHERE { <http://www.wikidata.org/entity/Q37079> <http://www.wikidata.org/prop/direct/P856> ?string . }"
+  },
+  {
+    "id": 42,
+    "question": "List all episodes of the first season of the HBO television series The Sopranos.",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q21191270> . ?uri <http://www.wikidata.org/prop/direct/P361> <http://www.wikidata.org/entity/Q5274359> } "
+  },
+  {
+    "id": 43,
+    "question": "Is there a video game called Battle Chess?",
+    "sparql": "prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#>  ASK WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q7889> . ?uri rdfs:label \"Battle Chess\"@en }"
+  },
+  {
+    "id": 44,
+    "question": "Give me the websites of companies with more than 500000 employees.",
+    "sparql": "SELECT DISTINCT ?string WHERE { ?uri <http://www.wikidata.org/prop/direct/P31>/(<http://www.wikidata.org/prop/direct/P279>*) <http://www.wikidata.org/entity/Q4830453> . ?uri <http://www.wikidata.org/prop/direct/P1128> ?number . FILTER(?number > 500000) . ?uri <http://www.wikidata.org/prop/direct/P856> ?string . }"
+  },
+  {
+    "id": 45,
+    "question": "Which actors were born in Germany?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P106> <http://www.wikidata.org/entity/Q10800557> . { ?uri <http://www.wikidata.org/prop/direct/P19> <http://www.wikidata.org/entity/Q183> . } UNION { ?uri <http://www.wikidata.org/prop/direct/P19>/<http://www.wikidata.org/prop/direct/P17> <http://www.wikidata.org/entity/Q183> . } }"
+  },
+  {
+    "id": 46,
+    "question": "Which instruments does Cat Stevens play?",
+    "sparql": "SELECT DISTINCT ?uri WHERE { <http://www.wikidata.org/entity/Q154216> <http://www.wikidata.org/prop/direct/P1303> ?uri . } "
+  },
+  {
+    "id": 47,
+    "question": "Give me all books written by Danielle Steel.",
+    "sparql": "SELECT DISTINCT ?uri WHERE { ?uri <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q571> . ?uri <http://www.wikidata.org/prop/direct/P50> <http://www.wikidata.org/entity/Q72653> . } "
+  },
+  {
+    "id": 48,
+    "question": "When did the Ming dynasty dissolve?",
+    "sparql": "SELECT DISTINCT ?date WHERE { <http://www.wikidata.org/entity/Q9903> <http://www.wikidata.org/prop/direct/P576> ?date . }"
+  },
+  {
+    "id": 49,
+    "question": "Is Lake Baikal bigger than the Great Bear Lake?",
+    "sparql": "ASK WHERE { <http://www.wikidata.org/entity/Q5513> <http://www.wikidata.org/prop/direct/P2046> ?area1 . <http://www.wikidata.org/entity/Q5525> <http://www.wikidata.org/prop/direct/P2046> ?area2 . FILTER(?area1 > ?area2) }"
+  },
+  {
+    "id": 50,
+    "question": "Was the Cuban Missile Crisis earlier than the Bay of Pigs Invasion?",
+    "sparql": "ASK WHERE { <http://www.wikidata.org/entity/Q128160> <http://www.wikidata.org/prop/direct/P582> ?date1 . <http://www.wikidata.org/entity/Q191721> <http://www.wikidata.org/prop/direct/P580> ?date2 . FILTER(?date1 < ?date2) }"
+  }
+]
