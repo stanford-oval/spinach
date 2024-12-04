@@ -26,6 +26,8 @@
 
 **The SPINACH agent**: The SPINACH agent is a new KBQA approach that mimics expert human SPARQL writing, achieving SOTA on many KBQA datasets. You can try it at https://spinach.genie.stanford.edu
 
+For more details, check out this blog post on [Wikimedia Research Newsletter](https://meta.m.wikimedia.org/wiki/Research:Newsletter/2024/November).
+
 # Folder Structure
 `datasets/` contains all prior dataset files. Predictions for the SPINACH agent used in the paper can be found at:
 - `datasets/qald_7_task4/spinach_output_test.json` for QALD-7
