@@ -26,6 +26,8 @@
 
 **The SPINACH agent**: The SPINACH agent is a new KBQA approach that mimics expert human SPARQL writing, achieving SOTA on many KBQA datasets. You can try it at https://spinach.genie.stanford.edu
 
+For more details, check out this blog post on [Wikimedia Research Newsletter](https://meta.m.wikimedia.org/wiki/Research:Newsletter/2024/November).
+
 # Folder Structure
 `datasets/` contains all prior dataset files. Predictions for the SPINACH agent used in the paper can be found at:
 - `datasets/qald_7_task4/spinach_output_test.json` for QALD-7
@@ -49,8 +51,6 @@
 
 Run `conda env create -f conda_env.yaml`.
 
-Then run `npm install sparqljs`. **TOCHECK:** is this still necessary?
-
 Create a file called `API_KEYS` and write various API keys inside. The format is one key per line, for example `OPENAI_API_KEY=sk-...`
 
 ## Run SPINACH parser and evaluate
@@ -73,17 +73,14 @@ python spinach_agent/evaluate_file.py --input datasets/qald_10/en/spinach_output
 
 If you'd like to simply run the parser on a list of questions, use the following code from `evaluate_parser.py`:
 ```python
-from chainlite import write_prompt_logs_to_file
 from spinach_agent.part_to_whole_parser import PartToWholeParser
 
 semantic_parser_class = PartToWholeParser
 semantic_parser_class.initialize(engine=args.engine) # e.g. "gpt-4o"
-try:
-    chain_output = semantic_parser_class.run_batch(
-        questions, # this should be a dict of {"question": "...", "conversation_history": [...]}, conversation_history can be empty list if running on single-turn questions
-    )
-finally:
-    write_prompt_logs_to_file() # for debugging purpose
+
+chain_output = semantic_parser_class.run_batch(
+    questions, # this should be a dict of {"question": "...", "conversation_history": [...]}, conversation_history can be empty list if running on single-turn questions
+)
 ```
 
 

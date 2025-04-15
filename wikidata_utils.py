@@ -20,10 +20,6 @@ client = StrictRedis(host="localhost", decode_responses=True)
 cache = RedisCache(redis_client=client, prefix="wikidata")
 # example of how to clean cache for a function: cached_requests.invalidate_all()
 
-from pymongo import MongoClient
-mongo_client = MongoClient()
-sparql_results = mongo_client["sparql_results"]["sparql_results"]
-
 from chainlite import get_logger
 import time
 
@@ -626,6 +622,9 @@ def execute_sparql(
         return res
 
 def nl2sparql_execute_sparql_timeout(query):
+    from pymongo import MongoClient
+    mongo_client = MongoClient()
+    sparql_results = mongo_client["sparql_results"]["sparql_results"]
     url = "https://query.wikidata.org/sparql"
     try:
         final_res = True
