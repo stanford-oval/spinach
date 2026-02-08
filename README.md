@@ -49,7 +49,7 @@ For more details, check out this blog post on [Wikimedia Research Newsletter](ht
 
 ## Set up environment
 
-Run `conda env create -f conda_env.yaml`.
+Run `conda env create -f conda_env.yaml` (note you may need to run `pip install docker` inside the environment if missing).
 
 Create a file called `API_KEYS` and write various API keys inside. The format is one key per line, for example `OPENAI_API_KEY=sk-...`
 
