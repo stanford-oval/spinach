@@ -129,3 +129,55 @@ def evaluate_parser(
         command += "--llm_extract_prediction_if_null "
 
     c.run(command)
+
+
+@task(pre=[start_redis, load_api_keys], aliases=["analyse", "analyze"])
+def analyse_results(
+    c,
+    input_file,
+    output_file=None,
+    format="json",
+):
+    """
+    Run the SPINACH evaluation analysis on an evaluated output JSON.
+
+    Produces detailed per-example precision/recall/F1 breakdown,
+    SPARQL complexity analysis, and error categorization.
+
+    Usage:
+        inv analyse --input-file datasets/qald_10/en/spinach_output_test.json
+        inv analyse --input-file output.json --output-file report.csv --format csv
+    """
+    command = (
+        f"python spinach_agent/analysis.py "
+        f"--input {input_file} "
+    )
+    if output_file:
+        command += f"--output {output_file} --format {format} "
+
+    c.run(command)
+
+
+@task(pre=[start_redis, load_api_keys], aliases=["benchmark"])
+def compare_runs(
+    c,
+    input_files,
+    output_file=None,
+):
+    """
+    Compare multiple SPINACH evaluation runs side-by-side.
+
+    Usage:
+        inv benchmark --input-files "run1.json run2.json"
+        inv benchmark --input-files "run1.json run2.json" --output-file comparison.json
+    """
+    files = input_files.split()
+    files_arg = " ".join(files)
+    command = (
+        f"python spinach_agent/analysis.py "
+        f"--input {files_arg} --compare "
+    )
+    if output_file:
+        command += f"--output {output_file} "
+
+    c.run(command)
